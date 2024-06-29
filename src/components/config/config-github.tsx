@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Config, loadConfig, saveConfig } from '../../services/config-storage';
 
 function ConfigGithub() {
