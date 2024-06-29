@@ -1,39 +1,40 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { Config, loadConfig, saveConfig } from '../../services/config-storage';
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 
 function ConfigGithub() {
   const [config, setConfig] = useState<Config>({
     github: {
-        owner: null,
-        repo: null,
-        token: null
+      owner: null,
+      repo: null,
+      token: null,
     },
     committer: {
       author: null,
-      email: null
-    }
-  });
+      email: null,
+    },
+  })
 
   useEffect(() => {
-    const config = loadConfig();
-    setConfig(config);
-  }, []);
+    const configFromStorage = loadConfig()
+    setConfig(configFromStorage)
+  }, [])
 
-  const handleChange = (section: keyof Config) => (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      [section]: {
-        ...prevConfig[section],
-        [name]: value
-      }
-    }));
-  };
+  const handleChange =
+    (section: keyof Config) => (e: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        [section]: {
+          ...prevConfig[section],
+          [name]: value,
+        },
+      }))
+    }
 
   const handleSave = () => {
-    saveConfig(config);
-  };
-  
+    saveConfig(config)
+  }
+
   return (
     <div>
       <h2>Configure Dairy GitHub Connection.</h2>
@@ -103,7 +104,7 @@ function ConfigGithub() {
 
       <button onClick={handleSave}>Save</button>
     </div>
-  );
+  )
 }
 
-export default ConfigGithub;
+export default ConfigGithub

@@ -80,7 +80,7 @@ describe('[loadConfig]', () => {
     });
 
     test('should load config from local storage', () => {
-        var config = loadConfig();
+        const config = loadConfig();
 
         expect(config).toEqual({
             github: {
