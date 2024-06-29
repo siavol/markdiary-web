@@ -6,8 +6,8 @@ export async function writeFileContent(title: string, content: string, timestamp
     const repo = config.github.repo;
     const token = config.github.token;
     
-    const author = 'Ilya Shestakov';
-    const email = 'siavol@gmail.com';
+    const author = config.committer.author;
+    const email = config.committer.email;
 
     const { fullYear, month, day, time } = dateParts(timestamp);
 

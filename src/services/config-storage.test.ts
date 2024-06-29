@@ -1,5 +1,15 @@
 import { saveConfig, loadConfig } from './config-storage';
 
+const testGithub = {
+    owner: 'grut',
+    repo: 'dairy',
+    token: 'secret'
+};
+const testCommitter = {
+    author: 'I am Grut!',
+    email: 'grut@galaxy.com'
+};
+
 describe('[saveConfig]', () => {
     beforeEach(() => {
         localStorage.clear();
@@ -8,9 +18,11 @@ describe('[saveConfig]', () => {
     test('should throw when github owner is empty', () => {
         expect(() => saveConfig({
             github: {
+                ...testGithub,
                 owner: null,
-                repo: 'dairy',
-                token: 'secret'
+            },
+            committer: {
+                ...testCommitter
             }
         })).toThrow();
     });
@@ -18,9 +30,11 @@ describe('[saveConfig]', () => {
     test('should throw when github repo is empty', () => {
         expect(() => saveConfig({
             github: {
-                owner: 'grut',
-                repo: null,
-                token: 'secret'
+                ...testGithub,
+                repo: null
+            },
+            committer: {
+                ...testCommitter
             }
         })).toThrow();
     });
@@ -28,9 +42,11 @@ describe('[saveConfig]', () => {
     test('should throw when github token is empty', () => {
         expect(() => saveConfig({
             github: {
-                owner: 'grut',
-                repo: 'dairy',
+                ...testGithub,
                 token: null
+            },
+            committer: {
+                ...testCommitter
             }
         })).toThrow();
     });
@@ -38,9 +54,10 @@ describe('[saveConfig]', () => {
     test('should save config to local storage', () => {
         saveConfig({
             github: {
-                owner: 'grut',
-                repo: 'dairy',
-                token: 'secret'
+                ...testGithub,
+            },
+            committer: {
+                ...testCommitter
             }
         });
 
@@ -54,9 +71,10 @@ describe('[loadConfig]', () => {
     beforeAll(() => {
         saveConfig({
             github: {
-                owner: 'grut',
-                repo: 'dairy',
-                token: 'secret'
+                ...testGithub,
+            },
+            committer: {
+                ...testCommitter
             }
         });
     });
@@ -69,6 +87,10 @@ describe('[loadConfig]', () => {
                 owner: 'grut',
                 repo: 'dairy',
                 token: 'secret'
+            },
+            committer: {
+                author: 'I am Grut!',
+                email: 'grut@galaxy.com'
             }
         });
     });

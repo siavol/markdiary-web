@@ -7,6 +7,10 @@ function ConfigGithub() {
         owner: null,
         repo: null,
         token: null
+    },
+    committer: {
+      author: null,
+      email: null
     }
   });
 
@@ -15,12 +19,12 @@ function ConfigGithub() {
     setConfig(config);
   }, []);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (section: keyof Config) => (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setConfig((prevConfig) => ({
       ...prevConfig,
-      github: {
-        ...prevConfig.github,
+      [section]: {
+        ...prevConfig[section],
         [name]: value
       }
     }));
@@ -32,40 +36,69 @@ function ConfigGithub() {
   
   return (
     <div>
-      <h2>Configure Dairy GitHub Repository.</h2>
+      <h2>Configure Dairy GitHub Connection.</h2>
 
       <div>
-        <label>
-          Owner:
-          <input
-            type="text"
-            name="owner"
-            value={config.github.owner || ''}
-            onChange={handleChange}
-          />
-        </label>
+        <h3>Repository</h3>
+        <div>
+          <label>
+            Owner:
+            <input
+              type="text"
+              name="owner"
+              value={config.github.owner || ''}
+              onChange={handleChange('github')}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Repository:
+            <input
+              type="text"
+              name="repo"
+              value={config.github.repo || ''}
+              onChange={handleChange('github')}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Token:
+            <input
+              type="password"
+              name="token"
+              value={config.github.token || ''}
+              onChange={handleChange('github')}
+            />
+          </label>
+        </div>
       </div>
+
       <div>
-        <label>
-          Repository:
-          <input
-            type="text"
-            name="repo"
-            value={config.github.repo || ''}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Token:
-          <input
-            type="password"
-            name="token"
-            value={config.github.token || ''}
-            onChange={handleChange}
-          />
-        </label>
+        <h3>Committer</h3>
+        <div>
+          <label>
+            Name:
+            <input
+              type="text"
+              name="author"
+              value={config.committer.author || ''}
+              onChange={handleChange('committer')}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Email:
+            <input
+              type="text"
+              name="email"
+              value={config.committer.email || ''}
+              onChange={handleChange('committer')}
+            />
+          </label>
+        </div>
       </div>
 
       <button onClick={handleSave}>Save</button>
