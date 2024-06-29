@@ -5,7 +5,8 @@ import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
 
 
 export default [
-  {files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
+  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
+  { ignores: ["build"] },
   { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
   {languageOptions: { globals: globals.browser }},
   pluginJs.configs.recommended,
