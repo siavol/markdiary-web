@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import ConfigGithub from './components/config/config-github';
+import NewRecord from './components/record/new-record';
 
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
 
       <div>Markdiary will be here.</div>
       <ConfigGithub></ConfigGithub>
+      <NewRecord></NewRecord>
     </div>
   );
 }
