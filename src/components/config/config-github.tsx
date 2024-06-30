@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 
-function ConfigGithub() {
+const ConfigGithub: React.FunctionComponent = () => {
   const [config, setConfig] = useState<Config>({
     github: {
       owner: null,
@@ -31,7 +31,7 @@ function ConfigGithub() {
       }))
     }
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     saveConfig(config)
   }
 
