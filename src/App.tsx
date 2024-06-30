@@ -1,10 +1,9 @@
-import React from 'react';
-import './App.css';
-import ConfigGithub from './components/config/config-github';
-import NewRecord from './components/record/new-record';
+import React from 'react'
+import './App.css'
+import ConfigGithub from './components/config/config-github'
+import NewRecord from './components/record/new-record'
 
-
-function App() {
+const App: React.FunctionComponent = () => {
   return (
     <div className="App">
       <header>Markdairy</header>
@@ -13,7 +12,7 @@ function App() {
       <ConfigGithub></ConfigGithub>
       <NewRecord></NewRecord>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
