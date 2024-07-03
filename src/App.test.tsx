@@ -1,9 +1,14 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import App from './App'
+import { BrowserRouter } from 'react-router-dom'
 
 test('renders expectation', () => {
-  render(<App />)
-  const expectationElement = screen.getByText(/Markdiary will be here/i)
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  )
+  const expectationElement = screen.getByText(/Records list will be here/i)
   expect(expectationElement).toBeInTheDocument()
 })
