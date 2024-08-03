@@ -5,13 +5,14 @@ import { Route, Routes } from 'react-router-dom'
 
 import './App.css'
 import Layout from './components/layout'
+import ListRecords from './components/record/list-records'
 
 const App: React.FunctionComponent = () => {
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<div>Records list will be here</div>} />
+          <Route index element={<ListRecords />} />
           <Route path="new" element={<NewRecord />} />
           <Route path="config" element={<ConfigGithub />} />
         </Route>
