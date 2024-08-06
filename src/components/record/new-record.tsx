@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { writeFileContent } from '../../services/github'
 import { loadConfig } from '../../services/config-storage'
 
 const NewRecord: React.FunctionComponent = () => {
   const [content, setContent] = useState('')
+  const navigate = useNavigate()
 
   const handleSave = (): void => {
     const config = loadConfig()
@@ -13,9 +15,9 @@ const NewRecord: React.FunctionComponent = () => {
       month: 'long',
       day: 'numeric',
     })
-    writeFileContent(title, content, now, config).then((data) =>
-      console.log('record saved', data)
-    )
+    writeFileContent(title, content, now, config).then(() => {
+      navigate('/')
+    })
   }
 
   return (

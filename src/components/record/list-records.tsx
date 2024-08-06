@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getRecords, JournalRecord } from '../../services/journal-repository'
 import { loadConfig } from '../../services/config-storage'
+import { Link } from 'react-router-dom'
 
 const ListRecords: React.FunctionComponent = () => {
   const [data, setData] = useState<JournalRecord[]>([])
@@ -33,7 +34,9 @@ const ListRecords: React.FunctionComponent = () => {
       <div>
         <ul>
           {data.map((r) => (
-            <li key={r.path}>{r.name}</li>
+            <li key={r.path}>
+              <Link to={`view/${r.name}`}>{r.name}</Link>
+            </li>
           ))}
         </ul>
       </div>

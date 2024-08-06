@@ -1,6 +1,7 @@
 import React from 'react'
 import ConfigGithub from './components/config/config-github'
 import NewRecord from './components/record/new-record'
+import ViewRecord from './components/record/view-record'
 import { Route, Routes } from 'react-router-dom'
 
 import './App.css'
@@ -14,6 +15,7 @@ const App: React.FunctionComponent = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<ListRecords />} />
           <Route path="new" element={<NewRecord />} />
+          <Route path="view/:recordId" element={<ViewRecord />} />
           <Route path="config" element={<ConfigGithub />} />
         </Route>
       </Routes>
