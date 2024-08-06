@@ -1,4 +1,4 @@
-import { getRepositoryContent } from './github'
+import { getRepositoryContent, RepositoryContentItem } from './github'
 import { Config } from './config-storage'
 
 export type JournalRecord = {
@@ -7,34 +7,41 @@ export type JournalRecord = {
   htmlUrl: URL
 }
 
+function byPath(a: RepositoryContentItem, b: RepositoryContentItem): number {
+  if (a.path < b.path) {
+    return -1
+  }
+  if (a.path > b.path) {
+    return 1
+  }
+  return 0
+}
+
 export async function getRecords(config: Config): Promise<JournalRecord[]> {
   const rootJournalPath = 'journal'
+  const resultLimit = 25
 
   const yearItems = await getRepositoryContent(rootJournalPath, config)
   const monthTasks = yearItems.map(async (year) => {
     return await getRepositoryContent(year.path, config)
   })
-  const months = (await Promise.all(monthTasks))
-    .flat()
-    .sort()
+  const months = (await Promise.all(monthTasks)).flat().sort(byPath)
 
   const result: JournalRecord[] = []
+  while (result.length < resultLimit && months.length > 0) {
+    const monthDir = months.pop()
+    if (!monthDir) continue
+
+    const path = monthDir.path
+    const items = await getRepositoryContent(path, config)
+    result.push(
+      ...items.map((i) => ({
+        name: i.name,
+        path: i.path,
+        htmlUrl: new URL(i.html_url),
+      }))
+    )
+  }
 
   return result
-  // return [
-  //   {
-  //     name: '20240701-1902',
-  //     path: 'journal/2024/07/20240701-1902.md',
-  //     htmlUrl: new URL(
-  //       'https://github.com/siavol/dairy/blob/main/journal/2024/07/20240701-1902.md'
-  //     ),
-  //   },
-  //   {
-  //     name: '20240703-0003',
-  //     path: 'journal/2024/07/20240703-0003.md',
-  //     htmlUrl: new URL(
-  //       'https://github.com/siavol/dairy/blob/main/journal/2024/07/20240703-0003.md'
-  //     ),
-  //   },
-  // ]
 }

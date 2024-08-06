@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getRecords, JournalRecord } from '../../services/journal-repository'
+import { loadConfig } from '../../services/config-storage'
 
 const ListRecords: React.FunctionComponent = () => {
   const [data, setData] = useState<JournalRecord[]>([])
@@ -7,9 +8,10 @@ const ListRecords: React.FunctionComponent = () => {
   const [error, setError] = useState<unknown>(null)
 
   useEffect(() => {
+    const config = loadConfig()
     const fetchData = async (): Promise<void> => {
       try {
-        const records = await getRecords()
+        const records = await getRecords(config)
         setData(records)
       } catch (err: unknown) {
         console.error('Failed to load journal records', err)
