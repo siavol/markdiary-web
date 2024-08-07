@@ -17,6 +17,16 @@ function byPath(a: RepositoryContentItem, b: RepositoryContentItem): number {
   return 0
 }
 
+function byNameDesc(a: JournalRecord, b: JournalRecord): number {
+  if (a.name < b.name) {
+    return 1
+  }
+  if (a.name > b.name) {
+    return -1
+  }
+  return 0
+}
+
 export async function getRecords(config: Config): Promise<JournalRecord[]> {
   const rootJournalPath = 'journal'
   const resultLimit = 25
@@ -43,5 +53,5 @@ export async function getRecords(config: Config): Promise<JournalRecord[]> {
     )
   }
 
-  return result
+  return result.sort(byNameDesc)
 }
