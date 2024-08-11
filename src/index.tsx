@@ -1,17 +1,45 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import App from './App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import { BrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Layout from './components/layout'
+import ListRecords from './components/record/list-records'
+import NewRecord, { newRecordAction } from './components/record/new-record'
+import ViewRecord from './components/record/view-record'
+import ConfigGithub from './components/config/config-github'
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <ListRecords />,
+      },
+      {
+        path: 'new',
+        element: <NewRecord />,
+        action: newRecordAction,
+      },
+      {
+        path: 'view/:recordId',
+        element: <ViewRecord />,
+      },
+      {
+        path: 'config',
+        element: <ConfigGithub />,
+      },
+    ],
+  },
+])
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <RouterProvider router={router} />
   </React.StrictMode>
 )
 

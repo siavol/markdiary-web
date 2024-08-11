@@ -1,38 +1,34 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { writeFileContent } from '../../services/github'
+import { ActionFunctionArgs, Form, redirect } from 'react-router-dom'
 import { loadConfig } from '../../services/config-storage'
+import { createRecord } from '../../services/journal-repository'
+
+export async function newRecordAction(
+  args: ActionFunctionArgs
+): Promise<Response> {
+  const values = Object.fromEntries(await args.request.formData())
+
+  const config = loadConfig()
+  await createRecord(values.content.toString(), config)
+
+  return redirect('/')
+}
 
 const NewRecord: React.FunctionComponent = () => {
   const [content, setContent] = useState('')
-  const navigate = useNavigate()
-
-  const handleSave = (): void => {
-    const config = loadConfig()
-    const now = new Date()
-    const title = now.toLocaleDateString('en-us', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-    writeFileContent(title, content, now, config).then(() => {
-      navigate('/')
-    })
-  }
 
   return (
-    <div>
+    <Form method="post">
       <h2>New Record</h2>
-      <div>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={10}
-          cols={50}
-        />
-      </div>
-      <button onClick={handleSave}>Save</button>
-    </div>
+      <textarea
+        name="content"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        rows={10}
+        cols={50}
+      />
+      <button type="submit">Save</button>
+    </Form>
   )
 }
 

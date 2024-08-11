@@ -1,4 +1,8 @@
-import { getRepositoryContent, RepositoryContentItem } from './github'
+import {
+  getRepositoryContent,
+  writeFileContent,
+  RepositoryContentItem,
+} from './github'
 import { Config } from './config-storage'
 
 export type JournalRecord = {
@@ -54,4 +58,17 @@ export async function getRecords(config: Config): Promise<JournalRecord[]> {
   }
 
   return result.sort(byNameDesc)
+}
+
+export async function createRecord(
+  content: string,
+  config: Config
+): Promise<void> {
+  const now = new Date()
+  const title = now.toLocaleDateString('en-us', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+  await writeFileContent(title, content, now, config)
 }
