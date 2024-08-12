@@ -9,7 +9,10 @@ import RecordsList from './components/record/records-list'
 import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
-import { newRecordAction } from './components/record/record-actions'
+import {
+  newRecordAction,
+  recordsLoader,
+} from './components/record/record-actions'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +22,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <RecordsList />,
+        loader: recordsLoader,
       },
       {
         path: 'new',
