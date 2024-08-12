@@ -3,7 +3,7 @@ import { getRecords, JournalRecord } from '../../services/journal-repository'
 import { loadConfig } from '../../services/config-storage'
 import { Link } from 'react-router-dom'
 
-const ListRecords: React.FunctionComponent = () => {
+const RecordsList: React.FunctionComponent = () => {
   const [data, setData] = useState<JournalRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<unknown>(null)
@@ -44,4 +44,4 @@ const ListRecords: React.FunctionComponent = () => {
   }
 }
 
-export default ListRecords
+export default RecordsList

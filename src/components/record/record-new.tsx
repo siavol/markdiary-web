@@ -14,7 +14,7 @@ export async function newRecordAction(
   return redirect('/')
 }
 
-const NewRecord: React.FunctionComponent = () => {
+const RecordNew: React.FunctionComponent = () => {
   const [content, setContent] = useState('')
 
   return (
@@ -32,4 +32,4 @@ const NewRecord: React.FunctionComponent = () => {
   )
 }
 
-export default NewRecord
+export default RecordNew

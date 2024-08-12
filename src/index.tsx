@@ -5,9 +5,9 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './components/layout'
-import ListRecords from './components/record/list-records'
-import NewRecord, { newRecordAction } from './components/record/new-record'
-import ViewRecord from './components/record/view-record'
+import RecordsList from './components/record/records-list'
+import RecordNew, { newRecordAction } from './components/record/record-new'
+import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
 
 const router = createBrowserRouter([
@@ -17,16 +17,16 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ListRecords />,
+        element: <RecordsList />,
       },
       {
         path: 'new',
-        element: <NewRecord />,
+        element: <RecordNew />,
         action: newRecordAction,
       },
       {
         path: 'view/:recordId',
-        element: <ViewRecord />,
+        element: <RecordView />,
       },
       {
         path: 'config',
