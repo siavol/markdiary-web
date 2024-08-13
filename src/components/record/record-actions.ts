@@ -2,6 +2,7 @@ import { ActionFunctionArgs, redirect } from 'react-router-dom'
 import { loadConfig } from '../../services/config-storage'
 import {
   createRecord,
+  getRecordHtml,
   getRecords,
   JournalRecord,
 } from '../../services/journal-repository'
@@ -26,4 +27,15 @@ export async function recordsLoader(): Promise<JournalRecord[]> {
     console.error('Failed to load journal records', err)
     throw err
   }
+}
+
+export async function recordHtmlLoader({
+  params,
+}: ActionFunctionArgs): Promise<string> {
+  const config = loadConfig()
+  const { recordId } = params
+  if (!recordId) throw new Error('recordId param must be not empty')
+
+  const html = await getRecordHtml(recordId, config)
+  return html
 }

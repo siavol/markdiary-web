@@ -11,6 +11,7 @@ import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
 import {
   newRecordAction,
+  recordHtmlLoader,
   recordsLoader,
 } from './components/record/record-actions'
 
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       {
         path: 'view/:recordId',
         element: <RecordView />,
+        loader: recordHtmlLoader,
       },
       {
         path: 'config',

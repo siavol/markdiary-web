@@ -117,3 +117,33 @@ export async function getRepositoryContent(
 
   return await response.json()
 }
+
+export async function getRepositoryContentHtml(
+  path: string,
+  config: Config
+): Promise<string> {
+  const owner = config.github.owner
+  const repo = config.github.repo
+  const token = config.github.token
+
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
+  const headers = {
+    Accept: 'application/vnd.github.html+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    Authorization: `Bearer ${token}`,
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: headers,
+  })
+
+  if (!response.ok) {
+    const errorDetails = await response.json()
+    throw new Error(
+      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorDetails)}`
+    )
+  }
+
+  return await response.text()
+}

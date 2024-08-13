@@ -2,13 +2,22 @@ import {
   getRepositoryContent,
   writeFileContent,
   RepositoryContentItem,
+  getRepositoryContentHtml,
 } from './github'
 import { Config } from './config-storage'
+
+const rootJournalPath = 'journal'
 
 export type JournalRecord = {
   name: string
   path: string
   htmlUrl: URL
+}
+
+type RecordDateParts = {
+  year: string
+  month: string
+  day: string
 }
 
 function byPath(a: RepositoryContentItem, b: RepositoryContentItem): number {
@@ -31,8 +40,15 @@ function byNameDesc(a: JournalRecord, b: JournalRecord): number {
   return 0
 }
 
+function dateFromRecordId(recordId: string): RecordDateParts {
+  const year = recordId.substring(0, 4)
+  const month = recordId.substring(4, 6)
+  const day = recordId.substring(6, 8)
+
+  return { year, month, day }
+}
+
 export async function getRecords(config: Config): Promise<JournalRecord[]> {
-  const rootJournalPath = 'journal'
   const resultLimit = 25
 
   const yearItems = await getRepositoryContent(rootJournalPath, config)
@@ -71,4 +87,14 @@ export async function createRecord(
     day: 'numeric',
   })
   await writeFileContent(title, content, now, config)
+}
+
+export async function getRecordHtml(
+  recordId: string,
+  config: Config
+): Promise<string> {
+  const { year, month } = dateFromRecordId(recordId)
+  const path = `${rootJournalPath}/${year}/${month}/${recordId}/`
+
+  return await getRepositoryContentHtml(path, config)
 }
