@@ -8,6 +8,14 @@ type DateParts = {
   time: string
 }
 
+export type RepositoryContentItem = {
+  name: string
+  path: string
+  sha: string
+  html_url: string
+  type: 'dir' | 'file'
+}
+
 function dateParts(date: Date): DateParts {
   const fullYear = date.getFullYear().toString()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -30,12 +38,8 @@ export async function writeFileContent(
   timestamp: Date,
   config: Config
 ): Promise<void> {
-  const owner = config.github.owner
-  const repo = config.github.repo
-  const token = config.github.token
-
-  const author = config.committer.author
-  const email = config.committer.email
+  const { owner, repo, token } = config.github
+  const { author, email } = config.committer
 
   const { fullYear, month, day, time } = dateParts(timestamp)
 
@@ -78,4 +82,60 @@ export async function writeFileContent(
   }
 
   await response.json()
+}
+
+export async function getRepositoryContent(
+  path: string,
+  config: Config
+): Promise<RepositoryContentItem[]> {
+  const { owner, repo, token } = config.github
+
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
+  const headers = {
+    Accept: 'application/vnd.github.html+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    Authorization: `Bearer ${token}`,
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: headers,
+  })
+
+  if (!response.ok) {
+    const errorDetails = await response.json()
+    throw new Error(
+      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorDetails)}`
+    )
+  }
+
+  return await response.json()
+}
+
+export async function getRepositoryContentHtml(
+  path: string,
+  config: Config
+): Promise<string> {
+  const { owner, repo, token } = config.github
+
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
+  const headers = {
+    Accept: 'application/vnd.github.html+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    Authorization: `Bearer ${token}`,
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: headers,
+  })
+
+  if (!response.ok) {
+    const errorDetails = await response.json()
+    throw new Error(
+      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorDetails)}`
+    )
+  }
+
+  return await response.text()
 }
