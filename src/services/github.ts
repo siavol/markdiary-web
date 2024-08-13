@@ -38,12 +38,8 @@ export async function writeFileContent(
   timestamp: Date,
   config: Config
 ): Promise<void> {
-  const owner = config.github.owner
-  const repo = config.github.repo
-  const token = config.github.token
-
-  const author = config.committer.author
-  const email = config.committer.email
+  const { owner, repo, token } = config.github
+  const { author, email } = config.committer
 
   const { fullYear, month, day, time } = dateParts(timestamp)
 
@@ -92,9 +88,7 @@ export async function getRepositoryContent(
   path: string,
   config: Config
 ): Promise<RepositoryContentItem[]> {
-  const owner = config.github.owner
-  const repo = config.github.repo
-  const token = config.github.token
+  const { owner, repo, token } = config.github
 
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
   const headers = {
@@ -122,9 +116,7 @@ export async function getRepositoryContentHtml(
   path: string,
   config: Config
 ): Promise<string> {
-  const owner = config.github.owner
-  const repo = config.github.repo
-  const token = config.github.token
+  const { owner, repo, token } = config.github
 
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
   const headers = {
