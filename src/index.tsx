@@ -14,11 +14,13 @@ import {
   recordHtmlLoader,
   recordsLoader,
 } from './components/record/record-actions'
+import ErrorBoundary from './components/error-boundary'
 
 const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <ErrorBoundary />,
     children: [
       {
         index: true,
