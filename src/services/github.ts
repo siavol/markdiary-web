@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer'
 import { Config } from './config-storage'
+import { GitHubApiError } from './github-error'
 
 type DateParts = {
   fullYear: string
@@ -29,6 +30,17 @@ function dateParts(date: Date): DateParts {
     month: month,
     day: day,
     time: time,
+  }
+}
+
+async function ensureResponseSuccessful(response: Response): Promise<void> {
+  if (!response.ok) {
+    const details = await response.json()
+    const error = new GitHubApiError(
+      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(details)}`,
+      response.status
+    )
+    throw error
   }
 }
 
@@ -73,13 +85,7 @@ export async function writeFileContent(
     headers: headers,
     body: body,
   })
-
-  if (!response.ok) {
-    const errorDetails = await response.json()
-    throw new Error(
-      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorDetails)}`
-    )
-  }
+  await ensureResponseSuccessful(response)
 
   await response.json()
 }
@@ -101,13 +107,7 @@ export async function getRepositoryContent(
     method: 'GET',
     headers: headers,
   })
-
-  if (!response.ok) {
-    const errorDetails = await response.json()
-    throw new Error(
-      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorDetails)}`
-    )
-  }
+  await ensureResponseSuccessful(response)
 
   return await response.json()
 }
@@ -129,13 +129,7 @@ export async function getRepositoryContentHtml(
     method: 'GET',
     headers: headers,
   })
-
-  if (!response.ok) {
-    const errorDetails = await response.json()
-    throw new Error(
-      `HTTP error! Status: ${response.status}, Details: ${JSON.stringify(errorDetails)}`
-    )
-  }
+  await ensureResponseSuccessful(response)
 
   return await response.text()
 }
