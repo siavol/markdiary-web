@@ -1,10 +1,31 @@
 {
     "general": {
-        "loading...": "loading..."
+        "loading...": "loading...",
+        "Save": "Save"
     },
     "layout": {
         "Home": "Home",
         "New record": "New record",
         "Configuration": "Configuration"
+    },
+    "config": {
+        "Configure Dairy GitHub Connection.": "Configure Dairy GitHub Connection.",
+        "Repository": "Repository",
+        "Owner:": "Owner:",
+        "Repository:": "Repository:",
+        "Token:": "Token:",
+        "Committer": "Committer",
+        "Name:": "Name:",
+        "Email:": "Email:"
+    },
+    "record": {
+        "New Record":"New Record"
+
+    },
+    "error": {
+        "Authentication error!": "Authentication error!",
+        "Check your GitHub credentials are valid in config.": "Check your GitHub credentials are valid in config.",
+        "Unknown error!": "Unknown error!",
+        "Something weird happened. Try again later.": "Something weird happened. Try again later."
     }
 }

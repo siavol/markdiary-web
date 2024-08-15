@@ -31,7 +31,7 @@ const Layout: React.FunctionComponent = () => {
   } else {
     return (
       <div>
-        <p>{t('loading...')}</p>
+        <p>{t('loading...', { ns: 'general' })}</p>
       </div>
     )
   }

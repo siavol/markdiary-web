@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
+import { useTranslation } from 'react-i18next'
 
 const ConfigGithub: React.FunctionComponent = () => {
   const [config, setConfig] = useState<Config>({
@@ -13,6 +14,7 @@ const ConfigGithub: React.FunctionComponent = () => {
       email: null,
     },
   })
+  const { t } = useTranslation(['config', 'general'])
 
   useEffect(() => {
     const configFromStorage = loadConfig()
@@ -37,13 +39,13 @@ const ConfigGithub: React.FunctionComponent = () => {
 
   return (
     <div>
-      <h2>Configure Dairy GitHub Connection.</h2>
+      <h2>{t('Configure Dairy GitHub Connection.')}</h2>
 
       <div>
-        <h3>Repository</h3>
+        <h3>{t('Repository')}</h3>
         <div>
           <label>
-            Owner:
+            {t('Owner:')}
             <input
               type="text"
               name="owner"
@@ -54,7 +56,7 @@ const ConfigGithub: React.FunctionComponent = () => {
         </div>
         <div>
           <label>
-            Repository:
+            {t('Repository:')}
             <input
               type="text"
               name="repo"
@@ -65,7 +67,7 @@ const ConfigGithub: React.FunctionComponent = () => {
         </div>
         <div>
           <label>
-            Token:
+            {t('Token:')}
             <input
               type="password"
               name="token"
@@ -77,10 +79,10 @@ const ConfigGithub: React.FunctionComponent = () => {
       </div>
 
       <div>
-        <h3>Committer</h3>
+        <h3>{t('Committer')}</h3>
         <div>
           <label>
-            Name:
+            {t('Name:')}
             <input
               type="text"
               name="author"
@@ -91,7 +93,7 @@ const ConfigGithub: React.FunctionComponent = () => {
         </div>
         <div>
           <label>
-            Email:
+            {t('Email:')}
             <input
               type="text"
               name="email"
@@ -102,7 +104,7 @@ const ConfigGithub: React.FunctionComponent = () => {
         </div>
       </div>
 
-      <button onClick={handleSave}>Save</button>
+      <button onClick={handleSave}>{t('Save', { ns: 'general' })}</button>
     </div>
   )
 }
