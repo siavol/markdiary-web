@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link, Outlet, useNavigation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
+  const { t } = useTranslation(['layout', 'general'])
 
   if (navigation.state === 'idle') {
     return (
@@ -11,13 +13,13 @@ const Layout: React.FunctionComponent = () => {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">{t('Home')}</Link>
             </li>
             <li>
-              <Link to="/new">New record</Link>
+              <Link to="/new">{t('New record')}</Link>
             </li>
             <li>
-              <Link to="/config">Configuration</Link>
+              <Link to="/config">{t('Configuration')}</Link>
             </li>
           </ul>
         </nav>
@@ -29,7 +31,7 @@ const Layout: React.FunctionComponent = () => {
   } else {
     return (
       <div>
-        <p>loading...</p>
+        <p>{t('loading...', { ns: 'general' })}</p>
       </div>
     )
   }
