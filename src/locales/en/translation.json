@@ -1,0 +1,10 @@
+{
+    "general": {
+        "loading...": "loading..."
+    },
+    "layout": {
+        "Home": "Home",
+        "New record": "New record",
+        "Configuration": "Configuration"
+    }
+}
