@@ -16,7 +16,6 @@ const ErrorBoundary: React.FunctionComponent = () => {
       </div>
     )
   } else {
-    console.log('Unknown error', error)
     return (
       <div>
         <h1>Unknown error!</h1>
