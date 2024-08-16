@@ -9,6 +9,7 @@ import RecordsList from './components/record/records-list'
 import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
+import ConfigGithubCallback from './components/config/config-github-callback'
 import {
   newRecordAction,
   recordHtmlLoader,
@@ -42,6 +43,10 @@ const router = createHashRouter([
       {
         path: 'config',
         element: <ConfigGithub />,
+      },
+      {
+        path: 'config/github/callback',
+        element: <ConfigGithubCallback />,
       },
     ],
   },

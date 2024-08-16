@@ -37,12 +37,24 @@ const ConfigGithub: React.FunctionComponent = () => {
     saveConfig(config)
   }
 
+  const ghAppClientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
+  let gitHubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${ghAppClientId}`
+  if (process.env.REACT_APP_GITHUB_APP_CALLBACK) {
+    gitHubAuthUrl += `&redirect_uri=${process.env.REACT_APP_GITHUB_APP_CALLBACK}`
+  }
+
   return (
     <div>
       <h2>{t('Configure Dairy GitHub Connection.')}</h2>
 
+      <h3>{t('GitHub App')}</h3>
       <div>
-        <h3>{t('Repository')}</h3>
+        <a href={gitHubAuthUrl}>Login with GitHub</a>
+      </div>
+
+      <h3>{t('GitHub Token')}</h3>
+      <div>
+        <h4>{t('Repository')}</h4>
         <div>
           <label>
             {t('Owner:')}
@@ -79,7 +91,7 @@ const ConfigGithub: React.FunctionComponent = () => {
       </div>
 
       <div>
-        <h3>{t('Committer')}</h3>
+        <h4>{t('Committer')}</h4>
         <div>
           <label>
             {t('Name:')}

@@ -24,3 +24,6 @@ yarn-error.log*
 
 # HTTP requests with test queries
 github-api.http
+
+# env variables file
+.env
