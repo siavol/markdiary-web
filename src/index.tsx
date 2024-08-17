@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import { createHashRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './components/layout'
 import RecordsList from './components/record/records-list'
 import RecordNew from './components/record/record-new'
@@ -18,34 +18,39 @@ import ErrorBoundary from './components/error-boundary'
 
 import './i18n'
 
-const router = createHashRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Layout />,
+      errorElement: <ErrorBoundary />,
+      children: [
+        {
+          index: true,
+          element: <RecordsList />,
+          loader: recordsLoader,
+        },
+        {
+          path: 'new',
+          element: <RecordNew />,
+          action: newRecordAction,
+        },
+        {
+          path: 'view/:recordId',
+          element: <RecordView />,
+          loader: recordHtmlLoader,
+        },
+        {
+          path: 'config',
+          element: <ConfigGithub />,
+        },
+      ],
+    },
+  ],
   {
-    path: '/',
-    element: <Layout />,
-    errorElement: <ErrorBoundary />,
-    children: [
-      {
-        index: true,
-        element: <RecordsList />,
-        loader: recordsLoader,
-      },
-      {
-        path: 'new',
-        element: <RecordNew />,
-        action: newRecordAction,
-      },
-      {
-        path: 'view/:recordId',
-        element: <RecordView />,
-        loader: recordHtmlLoader,
-      },
-      {
-        path: 'config',
-        element: <ConfigGithub />,
-      },
-    ],
-  },
-])
+    basename: process.env.REACT_APP_ROUTER_BASENAME,
+  }
+)
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
