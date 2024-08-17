@@ -53,7 +53,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: process.env.REACT_APP_ROUTER_BASENAME,
+    basename: '/markdairy-web',
   }
 )
 
