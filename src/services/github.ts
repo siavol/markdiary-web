@@ -133,3 +133,15 @@ export async function getRepositoryContentHtml(
 
   return await response.text()
 }
+
+export async function exchangeCodeToAccessToken(code: string): Promise<string> {
+  const clientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
+  const clientSecret = process.env.REACT_APP_GITHUB_APP_CLIENT_SECRET
+  const url = `https://github.com/login/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&code=${code}`
+  const response = await fetch(url, {
+    method: 'POST',
+  })
+  await ensureResponseSuccessful(response)
+
+  return await response.text()
+}
