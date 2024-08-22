@@ -38,10 +38,8 @@ export async function githubAppTokenLoader(
     }
   }
 
-  const resData = await exchangeCodeToAccessToken(code)
-  console.log(resData)
-
+  const tokenData = await exchangeCodeToAccessToken(code)
   return {
-    token: code,
+    token: tokenData.access_token,
   }
 }

@@ -17,6 +17,15 @@ export type RepositoryContentItem = {
   type: 'dir' | 'file'
 }
 
+export type GitHubAppToken = {
+  access_token: string
+  expires_in: string
+  refresh_token: string
+  refresh_token_expires_in: string
+  scope: string
+  token_type: string
+}
+
 function dateParts(date: Date): DateParts {
   const fullYear = date.getFullYear().toString()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -134,14 +143,16 @@ export async function getRepositoryContentHtml(
   return await response.text()
 }
 
-export async function exchangeCodeToAccessToken(code: string): Promise<string> {
-  const clientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
-  const clientSecret = process.env.REACT_APP_GITHUB_APP_CLIENT_SECRET
-  const url = `https://github.com/login/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&code=${code}`
-  const response = await fetch(url, {
+export async function exchangeCodeToAccessToken(
+  code: string
+): Promise<GitHubAppToken> {
+  const exchangeUrl = `${process.env.REACT_APP_GITHUB_APP_EXCHANGE_URL}?code=${code}`
+  const response = await fetch(exchangeUrl, {
     method: 'POST',
+    headers: {},
   })
   await ensureResponseSuccessful(response)
 
-  return await response.text()
+  const tokenData = await response.json()
+  return tokenData
 }
