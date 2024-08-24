@@ -146,7 +146,7 @@ export async function getRepositoryContentHtml(
 export async function exchangeCodeToAccessToken(
   code: string
 ): Promise<GitHubAppToken> {
-  const exchangeUrl = `${process.env.REACT_APP_GITHUB_APP_EXCHANGE_URL}?code=${code}`
+  const exchangeUrl = `${process.env.REACT_APP_GITHUB_APP_EXCHANGE_URL}&github-code=${code}`
   const response = await fetch(exchangeUrl, {
     method: 'POST',
     headers: {},
