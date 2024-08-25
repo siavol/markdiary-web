@@ -70,10 +70,10 @@ jobs:
         run: npm ci
 
       - name: Build app
-        run: npm run build
         env:
           REACT_APP_GITHUB_APP_NAME: ${{ vars.GH_APP_NAME }}
           REACT_APP_GITHUB_APP_EXCHANGE_URL: ${{ vars.GH_APP_EXCHANGE_URL }}
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
