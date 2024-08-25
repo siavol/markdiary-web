@@ -71,7 +71,8 @@ jobs:
 
       - name: Build app
         env:
-          REACT_APP_ROUTER_BASENAME: '/markdairy-web'
+          REACT_APP_GITHUB_APP_NAME: ${{ vars.GH_APP_NAME }}
+          REACT_APP_GITHUB_APP_EXCHANGE_URL: ${{ vars.GH_APP_EXCHANGE_URL }}
         run: npm run build
 
       - name: Upload artifact

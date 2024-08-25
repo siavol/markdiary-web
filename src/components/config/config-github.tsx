@@ -37,12 +37,35 @@ const ConfigGithub: React.FunctionComponent = () => {
     saveConfig(config)
   }
 
+  const appName = process.env.REACT_APP_GITHUB_APP_NAME
+  const gitHubAppInstallUrl = `https://github.com/apps/${appName}/installations/new/`
+
   return (
     <div>
-      <h2>{t('Configure Dairy GitHub Connection.')}</h2>
+      <h1>{t('Configure Dairy GitHub Connection.')}</h1>
 
+      <h2>{t('1. Connect to GitHub')}</h2>
+
+      <h3>{t('With GitHub App')}</h3>
       <div>
-        <h3>{t('Repository')}</h3>
+        <a href={gitHubAppInstallUrl}>Login with GitHub</a>
+      </div>
+
+      <h3>{t('OR with GitHub Token')}</h3>
+      <div>
+        <label>
+          {t('Token:')}
+          <input
+            type="password"
+            name="token"
+            value={config.github.token || ''}
+            onChange={handleChange('github')}
+          />
+        </label>
+      </div>
+
+      <h2>{t('2. Select repository')}</h2>
+      <div>
         <div>
           <label>
             {t('Owner:')}
@@ -65,21 +88,11 @@ const ConfigGithub: React.FunctionComponent = () => {
             />
           </label>
         </div>
-        <div>
-          <label>
-            {t('Token:')}
-            <input
-              type="password"
-              name="token"
-              value={config.github.token || ''}
-              onChange={handleChange('github')}
-            />
-          </label>
-        </div>
       </div>
 
+      <h2>{t('3. Name yourself for git')}</h2>
       <div>
-        <h3>{t('Committer')}</h3>
+        <h4>{t('Committer')}</h4>
         <div>
           <label>
             {t('Name:')}

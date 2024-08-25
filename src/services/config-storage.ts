@@ -29,6 +29,14 @@ export function saveConfig(config: Config): void {
   localStorage.setItem('markdiary.committer.email', config.committer.email)
 }
 
+export function saveGitHubToken(token: string): void {
+  if (!token) {
+    throw new Error('GitHub token must be not empty.')
+  }
+
+  localStorage.setItem('markdiary.github.token', token)
+}
+
 export function loadConfig(): Config {
   return {
     github: {

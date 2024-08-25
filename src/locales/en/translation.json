@@ -12,11 +12,14 @@
         "Configure Dairy GitHub Connection.": "Configure Dairy GitHub Connection.",
         "Repository": "Repository",
         "Owner:": "Owner:",
-        "Repository:": "Repository:",
         "Token:": "Token:",
         "Committer": "Committer",
         "Name:": "Name:",
         "Email:": "Email:"
+    },
+    "config-github-callback": {
+        "GitHub token generated.": "GitHub token generated.",
+        "Continue configuration": "Continue configuration"
     },
     "record": {
         "New Record":"New Record"

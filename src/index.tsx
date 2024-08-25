@@ -9,6 +9,8 @@ import RecordsList from './components/record/records-list'
 import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
+import ConfigGithubCallback from './components/config/config-github-callback'
+import { githubAppTokenLoader } from './components/config/config-actions'
 import {
   newRecordAction,
   recordHtmlLoader,
@@ -44,11 +46,16 @@ const router = createBrowserRouter(
           path: 'config',
           element: <ConfigGithub />,
         },
+        {
+          path: 'config/github/callback',
+          element: <ConfigGithubCallback />,
+          loader: githubAppTokenLoader,
+        },
       ],
     },
   ],
   {
-    basename: process.env.REACT_APP_ROUTER_BASENAME,
+    basename: '/markdairy-web',
   }
 )
 
