@@ -37,11 +37,8 @@ const ConfigGithub: React.FunctionComponent = () => {
     saveConfig(config)
   }
 
-  const ghAppClientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
-  let gitHubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${ghAppClientId}`
-  if (process.env.REACT_APP_GITHUB_APP_CALLBACK) {
-    gitHubAuthUrl += `&redirect_uri=${process.env.REACT_APP_GITHUB_APP_CALLBACK}`
-  }
+  const appName = process.env.REACT_APP_GITHUB_APP_NAME
+  const gitHubAppInstallUrl = `https://github.com/apps/${appName}/installations/new/`
 
   return (
     <div>
@@ -51,7 +48,7 @@ const ConfigGithub: React.FunctionComponent = () => {
 
       <h3>{t('With GitHub App')}</h3>
       <div>
-        <a href={gitHubAuthUrl}>Login with GitHub</a>
+        <a href={gitHubAppInstallUrl}>Login with GitHub</a>
       </div>
 
       <h3>{t('OR with GitHub Token')}</h3>

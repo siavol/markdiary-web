@@ -18,11 +18,11 @@ export class GitHubAppAuthError extends Error {
   }
 }
 
-export type TokenGeneratedStatus = 'ok'
+export type GithubAppStatus = 'app-installed'
 
 export async function githubAppTokenLoader(
   args: ActionFunctionArgs
-): Promise<TokenGeneratedStatus> {
+): Promise<GithubAppStatus> {
   const url = new URL(args.request.url)
   const params = new URLSearchParams(url.search)
 
@@ -47,6 +47,5 @@ export async function githubAppTokenLoader(
   const tokenData = await exchangeCodeToAccessToken(code)
   saveGitHubToken(tokenData.access_token)
 
-  console.log('Token saved!')
-  return 'ok'
+  return 'app-installed'
 }
