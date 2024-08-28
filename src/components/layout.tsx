@@ -13,13 +13,16 @@ const Layout: React.FunctionComponent = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Typography
+              to="/"
+              component={RouterLink}
+              variant="h6"
+              color="inherit"
+              sx={{ flexGrow: 1, textDecoration: 'none' }}
+            >
               Markdairy
             </Typography>
 
-            <Button to="/" color="inherit" component={RouterLink}>
-              {t('Home')}
-            </Button>
             <Button to="/new" color="inherit" component={RouterLink}>
               {t('New record')}
             </Button>
