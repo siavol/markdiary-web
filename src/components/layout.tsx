@@ -2,7 +2,15 @@ import React from 'react'
 import { Link as RouterLink, Outlet, useNavigation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
-import { AppBar, Container, Typography, Button, Toolbar } from '@mui/material'
+import {
+  AppBar,
+  Container,
+  Typography,
+  Button,
+  Toolbar,
+  IconButton,
+} from '@mui/material'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
@@ -23,12 +31,30 @@ const Layout: React.FunctionComponent = () => {
               Markdairy
             </Typography>
 
-            <Button to="/new" color="inherit" component={RouterLink}>
+            <Button
+              to="/new"
+              color="inherit"
+              component={RouterLink}
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+            >
               {t('New record')}
             </Button>
-            <Button to="/config" color="inherit" component={RouterLink}>
+
+            <Button
+              to="/config"
+              color="inherit"
+              component={RouterLink}
+              area-label="Configuration"
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+            >
               {t('Configuration')}
             </Button>
+            <IconButton
+              color="inherit"
+              sx={{ display: { xs: 'block', sm: 'none' } }}
+            >
+              <SettingsIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
 

@@ -28,7 +28,12 @@ const RecordsList: React.FunctionComponent = () => {
       </List>
       <Fab
         color="primary"
-        sx={{ position: 'fixed', bottom: 32, right: 32 }}
+        sx={{
+          position: 'fixed',
+          bottom: 32,
+          right: 32,
+          display: { xs: 'flex', sm: 'none' },
+        }}
         to="/new"
         component={RouterLink}
       >
