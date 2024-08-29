@@ -50,6 +50,8 @@ const Layout: React.FunctionComponent = () => {
               {t('Configuration')}
             </Button>
             <IconButton
+              to="/config"
+              component={RouterLink}
               color="inherit"
               sx={{ display: { xs: 'block', sm: 'none' } }}
             >
