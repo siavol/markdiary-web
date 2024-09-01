@@ -1,20 +1,45 @@
 import React from 'react'
 import { JournalRecord } from '../../services/journal-repository'
-import { Link, useLoaderData } from 'react-router-dom'
+import { Link as RouterLink, useLoaderData } from 'react-router-dom'
+import {
+  Container,
+  Fab,
+  List,
+  ListItemButton,
+  ListItemText,
+} from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
 
 const RecordsList: React.FunctionComponent = () => {
   const data = useLoaderData() as JournalRecord[]
 
   return (
-    <div>
-      <ul>
+    <Container>
+      <List>
         {data.map((r) => (
-          <li key={r.path}>
-            <Link to={`view/${r.name}`}>{r.name}</Link>
-          </li>
+          <ListItemButton
+            key={r.path}
+            to={`view/${r.name}`}
+            component={RouterLink}
+          >
+            <ListItemText>{r.name}</ListItemText>
+          </ListItemButton>
         ))}
-      </ul>
-    </div>
+      </List>
+      <Fab
+        color="primary"
+        sx={{
+          position: 'fixed',
+          bottom: 32,
+          right: 32,
+          display: { xs: 'flex', sm: 'none' },
+        }}
+        to="/new"
+        component={RouterLink}
+      >
+        <AddIcon />
+      </Fab>
+    </Container>
   )
 }
 
