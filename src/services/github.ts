@@ -87,7 +87,7 @@ export async function exchangeCodeToAccessToken(
   }
 }
 
-export async function refreshToken(config: Config): Promise<GitHubAuthConfig> {
+async function refreshToken(config: Config): Promise<GitHubAuthConfig> {
   const token = config.github.auth.refreshToken
 
   const refreshUrl = `${process.env.REACT_APP_GITHUB_APP_REFRESH_URL}&refresh-token=${token}`
@@ -113,6 +113,8 @@ export async function refreshToken(config: Config): Promise<GitHubAuthConfig> {
   }
 }
 
+let refreshTokenPromise: Promise<string | null> | null = null
+
 async function getAuthToken(config: Config): Promise<string | null> {
   const auth = config.github.auth
 
@@ -125,9 +127,19 @@ async function getAuthToken(config: Config): Promise<string | null> {
     return auth.token
   }
 
-  const tokenData = await refreshToken(config)
-  saveGitHubToken(tokenData)
-  return tokenData.token
+  // ensure only one token refresh will be executed
+  if (!refreshTokenPromise) {
+    refreshTokenPromise = refreshToken(config)
+      .then((tokenData) => {
+        saveGitHubToken(tokenData)
+        return tokenData.token
+      })
+      .finally(() => {
+        refreshTokenPromise = null
+      })
+  }
+
+  return refreshTokenPromise
 }
 
 export async function writeFileContent(
