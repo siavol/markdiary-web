@@ -2,6 +2,12 @@ import { ActionFunctionArgs } from 'react-router-dom'
 import { exchangeCodeToAccessToken } from '../../services/github'
 import { saveGitHubToken } from '../../services/config-storage'
 
+function getDateInSecondsFromNow(seconds: number): Date {
+  const currentDate = new Date()
+  currentDate.setSeconds(currentDate.getSeconds() + seconds)
+  return currentDate
+}
+
 export class GitHubAppAuthError extends Error {
   constructor(
     message: string,
@@ -45,7 +51,18 @@ export async function githubAppTokenLoader(
   }
 
   const tokenData = await exchangeCodeToAccessToken(code)
-  saveGitHubToken(tokenData.access_token)
+
+  const refreshTokenExpiresInSec = parseInt(tokenData.refresh_token_expires_in)
+  const refreshTokenExpiresIn = getDateInSecondsFromNow(
+    refreshTokenExpiresInSec
+  )
+
+  saveGitHubToken({
+    type: 'app',
+    token: tokenData.access_token,
+    refreshToken: tokenData.refresh_token,
+    refreshTokenExpiresIn,
+  })
 
   return 'app-installed'
 }

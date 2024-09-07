@@ -18,7 +18,12 @@ const ConfigGithub: React.FunctionComponent = () => {
     github: {
       owner: null,
       repo: null,
-      token: null,
+      auth: {
+        type: 'token',
+        token: null,
+        refreshToken: null,
+        refreshTokenExpiresIn: null,
+      },
     },
     committer: {
       author: null,
@@ -72,7 +77,7 @@ const ConfigGithub: React.FunctionComponent = () => {
           id="token-input"
           name="token"
           aria-describedby="token-helper-text"
-          value={config.github.token || ''}
+          value={config.github.auth.token || ''}
           onChange={handleChange('github')}
         />
         <FormHelperText id="token-helper-text">

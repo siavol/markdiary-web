@@ -1,9 +1,16 @@
-import { saveConfig, loadConfig } from './config-storage'
+import { saveConfig, loadConfig, Config } from './config-storage'
 
-const testGithub = {
+type GitHubConfig = Pick<Config, 'github'>['github'];
+
+const testGithub: GitHubConfig = {
   owner: 'grut',
   repo: 'dairy',
-  token: 'secret',
+  auth: {
+    type: 'token',
+    token: 'secret',
+    refreshToken: null,
+    refreshTokenExpiresIn: null,
+  },
 }
 const testCommitter = {
   author: 'I am Grut!',
@@ -48,7 +55,10 @@ describe('[saveConfig]', () => {
       saveConfig({
         github: {
           ...testGithub,
-          token: null,
+          auth: {
+            ...testGithub.auth,
+            token: null,
+          },
         },
         committer: {
           ...testCommitter,
