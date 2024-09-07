@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { Config } from './config-storage'
+import { Config, GitHubAuthConfig, saveGitHubToken } from './config-storage'
 import { GitHubApiError } from './github-error'
 
 type DateParts = {
@@ -42,6 +42,14 @@ function dateParts(date: Date): DateParts {
   }
 }
 
+function getDateInSecondsFromNow(value: string): Date {
+  const gap = 300 // expire in 5 minutes earlier
+  const seconds = parseInt(value)
+  const currentDate = new Date()
+  currentDate.setSeconds(currentDate.getSeconds() + seconds - gap)
+  return currentDate
+}
+
 async function ensureResponseSuccessful(response: Response): Promise<void> {
   if (!response.ok) {
     const details = await response.json()
@@ -53,15 +61,84 @@ async function ensureResponseSuccessful(response: Response): Promise<void> {
   }
 }
 
+export async function exchangeCodeToAccessToken(
+  code: string
+): Promise<GitHubAuthConfig> {
+  const exchangeUrl = `${process.env.REACT_APP_GITHUB_APP_EXCHANGE_URL}&github-code=${code}`
+  const response = await fetch(exchangeUrl, {
+    method: 'POST',
+    headers: {},
+  })
+  await ensureResponseSuccessful(response)
+
+  const tokenData = await response.json()
+
+  const tokenExpiresIn = getDateInSecondsFromNow(tokenData.expires_in)
+  const refreshTokenExpiresIn = getDateInSecondsFromNow(
+    tokenData.refresh_token_expires_in
+  )
+
+  return {
+    type: 'app',
+    token: tokenData.access_token,
+    tokenExpiresIn,
+    refreshToken: tokenData.refresh_token,
+    refreshTokenExpiresIn,
+  }
+}
+
+export async function refreshToken(config: Config): Promise<GitHubAuthConfig> {
+  const token = config.github.auth.refreshToken
+
+  const refreshUrl = `${process.env.REACT_APP_GITHUB_APP_REFRESH_URL}&refresh-token=${token}`
+  const response = await fetch(refreshUrl, {
+    method: 'POST',
+    headers: {},
+  })
+  await ensureResponseSuccessful(response)
+
+  const tokenData = await response.json()
+
+  const tokenExpiresIn = getDateInSecondsFromNow(tokenData.expires_in)
+  const refreshTokenExpiresIn = getDateInSecondsFromNow(
+    tokenData.refresh_token_expires_in
+  )
+
+  return {
+    type: 'app',
+    token: tokenData.access_token,
+    tokenExpiresIn,
+    refreshToken: tokenData.refresh_token,
+    refreshTokenExpiresIn,
+  }
+}
+
+async function getAuthToken(config: Config): Promise<string | null> {
+  const auth = config.github.auth
+
+  if (auth.type === 'token') {
+    return auth.token
+  }
+
+  const now = new Date()
+  if (auth.tokenExpiresIn && auth.tokenExpiresIn > now) {
+    return auth.token
+  }
+
+  const tokenData = await refreshToken(config)
+  saveGitHubToken(tokenData)
+  return tokenData.token
+}
+
 export async function writeFileContent(
   title: string,
   content: string,
   timestamp: Date,
   config: Config
 ): Promise<void> {
-  const { owner, repo, auth } = config.github
-  const { token } = auth
+  const { owner, repo } = config.github
   const { author, email } = config.committer
+  const token = await getAuthToken(config)
 
   const { fullYear, month, day, time } = dateParts(timestamp)
 
@@ -104,8 +181,8 @@ export async function getRepositoryContent(
   path: string,
   config: Config
 ): Promise<RepositoryContentItem[]> {
-  const { owner, repo, auth } = config.github
-  const { token } = auth
+  const { owner, repo } = config.github
+  const token = await getAuthToken(config)
 
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
   const headers = {
@@ -127,8 +204,8 @@ export async function getRepositoryContentHtml(
   path: string,
   config: Config
 ): Promise<string> {
-  const { owner, repo, auth } = config.github
-  const { token } = auth
+  const { owner, repo } = config.github
+  const token = await getAuthToken(config)
 
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
   const headers = {
@@ -144,32 +221,4 @@ export async function getRepositoryContentHtml(
   await ensureResponseSuccessful(response)
 
   return await response.text()
-}
-
-export async function exchangeCodeToAccessToken(
-  code: string
-): Promise<GitHubAppToken> {
-  const exchangeUrl = `${process.env.REACT_APP_GITHUB_APP_EXCHANGE_URL}&github-code=${code}`
-  const response = await fetch(exchangeUrl, {
-    method: 'POST',
-    headers: {},
-  })
-  await ensureResponseSuccessful(response)
-
-  const tokenData = await response.json()
-  return tokenData
-}
-
-export async function refreshToken(config: Config): Promise<GitHubAppToken> {
-  const token = config.github.auth.refreshToken
-
-  const refreshUrl = `${process.env.REACT_APP_GITHUB_APP_REFRESH_URL}&refresh-token=${token}`
-  const response = await fetch(refreshUrl, {
-    method: 'POST',
-    headers: {},
-  })
-  await ensureResponseSuccessful(response)
-
-  const tokenData = await response.json()
-  return tokenData
 }

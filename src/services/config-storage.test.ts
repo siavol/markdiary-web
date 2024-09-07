@@ -1,6 +1,6 @@
 import { saveConfig, loadConfig, Config } from './config-storage'
 
-type GitHubConfig = Pick<Config, 'github'>['github'];
+type GitHubConfig = Pick<Config, 'github'>['github']
 
 const testGithub: GitHubConfig = {
   owner: 'grut',
@@ -8,6 +8,7 @@ const testGithub: GitHubConfig = {
   auth: {
     type: 'token',
     token: 'secret',
+    tokenExpiresIn: null,
     refreshToken: null,
     refreshTokenExpiresIn: null,
   },
