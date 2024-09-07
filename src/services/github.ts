@@ -159,3 +159,17 @@ export async function exchangeCodeToAccessToken(
   const tokenData = await response.json()
   return tokenData
 }
+
+export async function refreshToken(config: Config): Promise<GitHubAppToken> {
+  const token = config.github.auth.refreshToken
+
+  const refreshUrl = `${process.env.REACT_APP_GITHUB_APP_REFRESH_URL}&refresh-token=${token}`
+  const response = await fetch(refreshUrl, {
+    method: 'POST',
+    headers: {},
+  })
+  await ensureResponseSuccessful(response)
+
+  const tokenData = await response.json()
+  return tokenData
+}
