@@ -77,7 +77,9 @@ describe('[saveConfig]', () => {
 
     expect(localStorage.getItem('markdiary.github.owner')).toEqual('grut')
     expect(localStorage.getItem('markdiary.github.repo')).toEqual('dairy')
-    expect(localStorage.getItem('markdiary.github.auth.token')).toEqual('secret')
+    expect(localStorage.getItem('markdiary.github.auth.token')).toEqual(
+      'secret'
+    )
   })
 })
 
