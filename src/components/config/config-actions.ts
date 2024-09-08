@@ -45,7 +45,8 @@ export async function githubAppTokenLoader(
   }
 
   const tokenData = await exchangeCodeToAccessToken(code)
-  saveGitHubToken(tokenData.access_token)
+
+  saveGitHubToken(tokenData)
 
   return 'app-installed'
 }

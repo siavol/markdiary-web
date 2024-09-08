@@ -1,9 +1,14 @@
-import { saveConfig, loadConfig } from './config-storage'
+import { saveConfig, loadConfig, Config } from './config-storage'
 
-const testGithub = {
+type GitHubConfig = Pick<Config, 'github'>['github']
+
+const testGithub: GitHubConfig = {
   owner: 'grut',
   repo: 'dairy',
-  token: 'secret',
+  auth: {
+    type: 'token',
+    token: 'secret',
+  },
 }
 const testCommitter = {
   author: 'I am Grut!',
@@ -48,7 +53,10 @@ describe('[saveConfig]', () => {
       saveConfig({
         github: {
           ...testGithub,
-          token: null,
+          auth: {
+            ...testGithub.auth,
+            token: null,
+          },
         },
         committer: {
           ...testCommitter,
@@ -69,7 +77,9 @@ describe('[saveConfig]', () => {
 
     expect(localStorage.getItem('markdiary.github.owner')).toEqual('grut')
     expect(localStorage.getItem('markdiary.github.repo')).toEqual('dairy')
-    expect(localStorage.getItem('markdiary.github.token')).toEqual('secret')
+    expect(localStorage.getItem('markdiary.github.auth.token')).toEqual(
+      'secret'
+    )
   })
 })
 
@@ -92,7 +102,10 @@ describe('[loadConfig]', () => {
       github: {
         owner: 'grut',
         repo: 'dairy',
-        token: 'secret',
+        auth: {
+          type: 'token',
+          token: 'secret',
+        },
       },
       committer: {
         author: 'I am Grut!',
