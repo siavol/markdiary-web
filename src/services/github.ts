@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer'
 import { Config, GitHubAuthConfig, saveGitHubToken } from './config-storage'
-import { GitHubApiError } from './github-error'
+import { GitHubApiError } from '../errors/github-error'
+import { AuthenticationError } from '../errors/authentication-error'
 
 type DateParts = {
   fullYear: string
@@ -89,8 +90,14 @@ export async function exchangeCodeToAccessToken(
 
 async function refreshToken(config: Config): Promise<GitHubAuthConfig> {
   if (config.github.auth.type !== 'app')
-    throw new Error('Only GitHub App authentication supports token refresh')
+    throw new AuthenticationError(
+      'Only GitHub App authentication supports token refresh'
+    )
   const token = config.github.auth.refreshToken
+  if (!token)
+    throw new AuthenticationError(
+      'There is no authentication refresh token in the storage'
+    )
 
   const refreshUrl = `${process.env.REACT_APP_GITHUB_APP_REFRESH_URL}&refresh-token=${token}`
   const response = await fetch(refreshUrl, {
@@ -119,6 +126,11 @@ let refreshTokenPromise: Promise<string | null> | null = null
 
 async function getAuthToken(config: Config): Promise<string | null> {
   const auth = config.github.auth
+
+  if (!auth.token)
+    throw new AuthenticationError(
+      'There is no authentication token in the storage'
+    )
 
   if (auth.type === 'token') {
     return auth.token
