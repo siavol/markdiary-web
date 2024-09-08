@@ -1,14 +1,28 @@
-import { Button, Container, Stack, TextField, Typography } from '@mui/material'
+import {
+  Alert,
+  Button,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Form } from 'react-router-dom'
+import { Form, useActionData } from 'react-router-dom'
+import { SaveRecordProblem } from './record-actions'
 
 const RecordNew: React.FunctionComponent = () => {
-  const [content, setContent] = useState('')
+  const savingProblem = useActionData() as SaveRecordProblem | undefined
+  const [content, setContent] = useState(savingProblem?.recordText || '')
   const { t } = useTranslation(['record', 'general'])
+
+  const errorAlert = savingProblem ? (
+    <Alert severity="error">Saving failed: {savingProblem.error.message}</Alert>
+  ) : null
 
   return (
     <Container>
+      {errorAlert}
       <Typography variant="h4">{t('New Record')}</Typography>
       <Form method="post">
         <Stack>

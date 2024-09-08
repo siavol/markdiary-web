@@ -7,15 +7,35 @@ import {
   JournalRecord,
 } from '../../services/journal-repository'
 
+function getSavingError(error: unknown): Error {
+  if (error instanceof Error) {
+    return error
+  }
+  return new Error('Unknown saving error', { cause: error })
+}
+
+export type SaveRecordProblem = {
+  recordText: string
+  error: Error
+}
+
 export async function newRecordAction(
   args: ActionFunctionArgs
-): Promise<Response> {
-  const values = Object.fromEntries(await args.request.formData())
-
+): Promise<Response | SaveRecordProblem> {
   const config = loadConfig()
-  await createRecord(values.content.toString(), config)
+  const values = Object.fromEntries(await args.request.formData())
+  const recordText = values.content.toString()
 
-  return redirect('/')
+  try {
+    await createRecord(recordText, config)
+    return redirect('/')
+  } catch (err) {
+    console.error('Failed to save a record', err)
+    return {
+      recordText,
+      error: getSavingError(err),
+    }
+  }
 }
 
 export async function recordsLoader(): Promise<JournalRecord[]> {
