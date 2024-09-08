@@ -135,7 +135,10 @@ async function getAuthToken(config: Config): Promise<string | null> {
         return tokenData.token
       })
       .finally(() => {
-        refreshTokenPromise = null
+        // cleanup shared token in a minute
+        setTimeout(() => {
+          refreshTokenPromise = null
+        }, 60 * 1000)
       })
   }
 
