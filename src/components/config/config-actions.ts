@@ -1,22 +1,7 @@
 import { ActionFunctionArgs } from 'react-router-dom'
 import { exchangeCodeToAccessToken } from '../../services/github'
 import { saveGitHubToken } from '../../services/config-storage'
-
-export class GitHubAppAuthError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly description: string
-  ) {
-    super(message)
-
-    this.name = this.constructor.name
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor)
-    }
-  }
-}
+import { GitHubAppAuthFlowError } from '../../errors/github-app-auth-flow-error'
 
 export type GithubAppStatus = 'app-installed'
 
@@ -28,7 +13,7 @@ export async function githubAppTokenLoader(
 
   const error = params.get('error')
   if (error) {
-    throw new GitHubAppAuthError(
+    throw new GitHubAppAuthFlowError(
       'Error in GitHub App callback',
       error,
       params.get('error_description') || ''
@@ -37,7 +22,7 @@ export async function githubAppTokenLoader(
 
   const code = params.get('code')
   if (!code) {
-    throw new GitHubAppAuthError(
+    throw new GitHubAppAuthFlowError(
       'No GitHub code in callback',
       'no_github_code',
       ''

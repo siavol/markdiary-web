@@ -52,7 +52,9 @@ const ConfigGithub: React.FunctionComponent = () => {
   }
 
   const appName = process.env.REACT_APP_GITHUB_APP_NAME
+  const clientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
   const gitHubAppInstallUrl = `https://github.com/apps/${appName}/installations/new/`
+  const gitHubAppLoginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`
 
   return (
     <Container>
@@ -64,7 +66,15 @@ const ConfigGithub: React.FunctionComponent = () => {
 
       <Typography variant="h5">{t('With GitHub App')}</Typography>
       <Box>
-        <Link href={gitHubAppInstallUrl}>Login with GitHub</Link>
+        <Link href={gitHubAppInstallUrl}>
+          {t('Install Markdairy GitHub App')}
+        </Link>
+        <Typography variant="body1" display="inline">
+          {t(' or ')}
+        </Typography>
+        <Link href={gitHubAppLoginUrl}>
+          {t('Login to Markdairy GitHub App')}
+        </Link>
       </Box>
 
       <Typography variant="h5">{t('OR with GitHub Token')}</Typography>
