@@ -88,6 +88,8 @@ export async function exchangeCodeToAccessToken(
 }
 
 async function refreshToken(config: Config): Promise<GitHubAuthConfig> {
+  if (config.github.auth.type !== 'app')
+    throw new Error('Only GitHub App authentication supports token refresh')
   const token = config.github.auth.refreshToken
 
   const refreshUrl = `${process.env.REACT_APP_GITHUB_APP_REFRESH_URL}&refresh-token=${token}`

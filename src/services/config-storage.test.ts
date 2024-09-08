@@ -8,9 +8,6 @@ const testGithub: GitHubConfig = {
   auth: {
     type: 'token',
     token: 'secret',
-    tokenExpiresIn: null,
-    refreshToken: null,
-    refreshTokenExpiresIn: null,
   },
 }
 const testCommitter = {

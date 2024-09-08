@@ -10,20 +10,21 @@ export type Config = {
   }
 }
 
-type GitHubAuthType = 'token' | 'app'
+type GitHubTokenAuthConfig = {
+  type: 'token'
+  token: string | null
+}
 
-// export type GitHubAuthTokenConfig = {
-//   type: 'token'
-//   token: string
-// }
-
-export type GitHubAuthConfig = {
-  type: GitHubAuthType
+type GitHubAppAuthConfig = {
+  type: 'app'
   token: string | null
   tokenExpiresIn: Date | null
   refreshToken: string | null
   refreshTokenExpiresIn: Date | null
 }
+
+export type GitHubAuthConfig = GitHubTokenAuthConfig | GitHubAppAuthConfig
+type GitHubAuthType = GitHubAuthConfig['type']
 
 const GithubOwnerStorageItem = 'markdiary.github.owner'
 const GithubRepoStorageItem = 'markdiary.github.repo'
@@ -57,18 +58,20 @@ export function saveGitHubToken(authConfig: GitHubAuthConfig): void {
 
   localStorage.setItem(GithubAuthTypeStorageItem, authConfig.type)
   localStorage.setItem(GithubAuthTokenStorageItem, authConfig.token)
-  setNullableStorageItem(
-    GithubAuthTokenExpirationStorageItem,
-    authConfig.tokenExpiresIn?.toISOString()
-  )
-  setNullableStorageItem(
-    GithubAuthRefreshTokenStorageItem,
-    authConfig.refreshToken
-  )
-  setNullableStorageItem(
-    GithubAuthRefreshTokenExpirationStorageItem,
-    authConfig.refreshTokenExpiresIn?.toISOString()
-  )
+  if (authConfig.type === 'app') {
+    setNullableStorageItem(
+      GithubAuthTokenExpirationStorageItem,
+      authConfig.tokenExpiresIn?.toISOString()
+    )
+    setNullableStorageItem(
+      GithubAuthRefreshTokenStorageItem,
+      authConfig.refreshToken
+    )
+    setNullableStorageItem(
+      GithubAuthRefreshTokenExpirationStorageItem,
+      authConfig.refreshTokenExpiresIn?.toISOString()
+    )
+  }
 }
 
 export function saveConfig(config: Config): void {

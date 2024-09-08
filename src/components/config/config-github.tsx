@@ -21,9 +21,6 @@ const ConfigGithub: React.FunctionComponent = () => {
       auth: {
         type: 'token',
         token: null,
-        tokenExpiresIn: null,
-        refreshToken: null,
-        refreshTokenExpiresIn: null,
       },
     },
     committer: {
