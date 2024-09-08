@@ -9,6 +9,7 @@ import {
   Button,
   Toolbar,
   IconButton,
+  LinearProgress,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 
@@ -16,62 +17,54 @@ const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
   const { t } = useTranslation(['layout', 'general'])
 
-  if (navigation.state === 'idle') {
-    return (
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography
-              to="/"
-              component={RouterLink}
-              variant="h6"
-              color="inherit"
-              sx={{ flexGrow: 1, textDecoration: 'none' }}
-            >
-              Markdairy
-            </Typography>
+  const content = navigation.state === 'idle' ? <Outlet /> : <LinearProgress />
 
-            <Button
-              to="/new"
-              color="inherit"
-              component={RouterLink}
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              {t('New record')}
-            </Button>
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography
+            to="/"
+            component={RouterLink}
+            variant="h6"
+            color="inherit"
+            sx={{ flexGrow: 1, textDecoration: 'none' }}
+          >
+            Markdairy
+          </Typography>
 
-            <Button
-              to="/config"
-              color="inherit"
-              component={RouterLink}
-              area-label="Configuration"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              {t('Configuration')}
-            </Button>
-            <IconButton
-              to="/config"
-              component={RouterLink}
-              color="inherit"
-              sx={{ display: { xs: 'block', sm: 'none' } }}
-            >
-              <SettingsIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+          <Button
+            to="/new"
+            color="inherit"
+            component={RouterLink}
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+          >
+            {t('New record')}
+          </Button>
 
-        <Container maxWidth="md">
-          <Outlet />
-        </Container>
-      </Box>
-    )
-  } else {
-    return (
-      <Box>
-        <p>{t('loading...', { ns: 'general' })}</p>
-      </Box>
-    )
-  }
+          <Button
+            to="/config"
+            color="inherit"
+            component={RouterLink}
+            area-label="Configuration"
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+          >
+            {t('Configuration')}
+          </Button>
+          <IconButton
+            to="/config"
+            component={RouterLink}
+            color="inherit"
+            sx={{ display: { xs: 'block', sm: 'none' } }}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
+      <Container maxWidth="md">{content}</Container>
+    </Box>
+  )
 }
 
 export default Layout
