@@ -77,7 +77,7 @@ describe('[saveConfig]', () => {
 
     expect(localStorage.getItem('markdiary.github.owner')).toEqual('grut')
     expect(localStorage.getItem('markdiary.github.repo')).toEqual('dairy')
-    expect(localStorage.getItem('markdiary.github.token')).toEqual('secret')
+    expect(localStorage.getItem('markdiary.github.auth.token')).toEqual('secret')
   })
 })
 
@@ -100,7 +100,10 @@ describe('[loadConfig]', () => {
       github: {
         owner: 'grut',
         repo: 'dairy',
-        token: 'secret',
+        auth: {
+          type: 'token',
+          token: 'secret',
+        },
       },
       committer: {
         author: 'I am Grut!',

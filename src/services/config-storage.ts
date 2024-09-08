@@ -14,7 +14,6 @@ type GitHubTokenAuthConfig = {
   type: 'token'
   token: string | null
 }
-
 type GitHubAppAuthConfig = {
   type: 'app'
   token: string | null
@@ -22,9 +21,7 @@ type GitHubAppAuthConfig = {
   refreshToken: string | null
   refreshTokenExpiresIn: Date | null
 }
-
 export type GitHubAuthConfig = GitHubTokenAuthConfig | GitHubAppAuthConfig
-type GitHubAuthType = GitHubAuthConfig['type']
 
 const GithubOwnerStorageItem = 'markdiary.github.owner'
 const GithubRepoStorageItem = 'markdiary.github.repo'
@@ -94,17 +91,7 @@ export function saveConfig(config: Config): void {
   localStorage.setItem(GithubEmailStorageItem, config.committer.email)
 }
 
-function parseGithubAuthType(value: string | null): GitHubAuthType {
-  switch (value) {
-    case 'token':
-    case 'app':
-      return value
-    default:
-      return 'token'
-  }
-}
-
-export function loadConfig(): Config {
+function loadAuthConfig(): GitHubAuthConfig {
   let token = localStorage.getItem(GithubAuthTokenStorageItem)
   if (!token) {
     // fallback to legacy config item
@@ -112,26 +99,35 @@ export function loadConfig(): Config {
     token = localStorage.getItem('markdiary.github.token')
   }
 
-  const refreshTokenExpiresIn = getDateStorageItem(
-    GithubAuthRefreshTokenExpirationStorageItem
-  )
-  const tokenExpiresIn = getDateStorageItem(
-    GithubAuthTokenExpirationStorageItem
-  )
+  const type = localStorage.getItem(GithubAuthTypeStorageItem)
+  if (type === 'app') {
+    const refreshTokenExpiresIn = getDateStorageItem(
+      GithubAuthRefreshTokenExpirationStorageItem
+    )
+    const tokenExpiresIn = getDateStorageItem(
+      GithubAuthTokenExpirationStorageItem
+    )
+    return {
+      type,
+      token,
+      tokenExpiresIn,
+      refreshToken: localStorage.getItem(GithubAuthRefreshTokenStorageItem),
+      refreshTokenExpiresIn,
+    }
+  } else {
+    return {
+      type: 'token',
+      token,
+    }
+  }
+}
 
+export function loadConfig(): Config {
   return {
     github: {
       owner: localStorage.getItem(GithubOwnerStorageItem),
       repo: localStorage.getItem(GithubRepoStorageItem),
-      auth: {
-        type: parseGithubAuthType(
-          localStorage.getItem(GithubAuthTypeStorageItem)
-        ),
-        token,
-        tokenExpiresIn,
-        refreshToken: localStorage.getItem(GithubAuthRefreshTokenStorageItem),
-        refreshTokenExpiresIn,
-      },
+      auth: loadAuthConfig(),
     },
     committer: {
       author: localStorage.getItem(GithubAuthorStorageItem),
