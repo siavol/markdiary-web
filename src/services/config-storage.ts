@@ -136,7 +136,7 @@ export function loadConfig(): Config {
   }
 }
 
-export function hasSomeConfiguration(): boolean {
+export function hasRequiredConfiguration(): boolean {
   const requiredItems = [GithubAuthTokenStorageItem]
-  return !requiredItems.some((item) => !localStorage.getItem(item))
+  return requiredItems.every((item) => localStorage.getItem(item))
 }

@@ -1,5 +1,8 @@
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
-import { loadConfig } from '../../services/config-storage'
+import {
+  hasRequiredConfiguration,
+  loadConfig,
+} from '../../services/config-storage'
 import {
   createRecord,
   getRecordHtml,
@@ -38,14 +41,18 @@ export async function newRecordAction(
   }
 }
 
-export async function recordsLoader(): Promise<JournalRecord[]> {
-  const config = loadConfig()
-  try {
-    const records = await getRecords(config)
-    return records
-  } catch (err: unknown) {
-    console.error('Failed to load journal records', err)
-    throw err
+export async function recordsLoader(): Promise<Response | JournalRecord[]> {
+  if (hasRequiredConfiguration()) {
+    const config = loadConfig()
+    try {
+      const records = await getRecords(config)
+      return records
+    } catch (err: unknown) {
+      console.error('Failed to load journal records', err)
+      throw err
+    }
+  } else {
+    return redirect('/start')
   }
 }
 
