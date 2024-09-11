@@ -5,7 +5,6 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './components/layout'
-import RecordsList from './components/record/records-list'
 import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
@@ -19,6 +18,8 @@ import {
 import ErrorBoundary from './components/error-boundary'
 
 import './i18n'
+import RecordsList from './components/record/records-list'
+import Start from './components/start'
 
 const router = createBrowserRouter(
   [
@@ -31,6 +32,10 @@ const router = createBrowserRouter(
           index: true,
           element: <RecordsList />,
           loader: recordsLoader,
+        },
+        {
+          path: 'start',
+          element: <Start />,
         },
         {
           path: 'new',
