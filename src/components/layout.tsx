@@ -12,12 +12,25 @@ import {
   LinearProgress,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
+import { hasRequiredConfiguration } from '../services/config-storage'
 
 const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
   const { t } = useTranslation(['layout', 'general'])
+  const isConfigured = hasRequiredConfiguration()
 
   const content = navigation.state === 'idle' ? <Outlet /> : <LinearProgress />
+
+  const newButton = isConfigured ? (
+    <Button
+      to="/new"
+      color="inherit"
+      component={RouterLink}
+      sx={{ display: { xs: 'none', sm: 'block' } }}
+    >
+      {t('New record')}
+    </Button>
+  ) : null
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -33,14 +46,7 @@ const Layout: React.FunctionComponent = () => {
             Markdairy
           </Typography>
 
-          <Button
-            to="/new"
-            color="inherit"
-            component={RouterLink}
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            {t('New record')}
-          </Button>
+          {newButton}
 
           <Button
             to="/config"
