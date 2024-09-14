@@ -17,8 +17,8 @@ export type RepositoryContentItem = {
   name: string
   path: string
   sha: string
-  html_url: string
-  type: 'dir' | 'file'
+  html_url: string | null
+  type: 'dir' | 'file' | 'submodule' | 'symlink'
 }
 
 export type GitHubAppToken = {
@@ -223,20 +223,29 @@ export async function getRepositoryContent(
   const { owner, repo } = config.github
   const token = await getAuthToken(config)
 
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
-  const headers = {
-    Accept: 'application/vnd.github.html+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    Authorization: `Bearer ${token}`,
-  }
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: headers,
+  const octokit = new Octokit({
+    auth: token,
   })
-  await ensureResponseSuccessful(response)
 
-  return await response.json()
+  const response = await octokit.repos.getContent({
+    owner: notEmpty(owner),
+    repo: notEmpty(repo),
+    path,
+    mediaType: { format: 'application/vnd.github.html+json' },
+  })
+  const data = response.data
+
+  if (Array.isArray(data)) {
+    return data.map((item) => ({
+      name: item.name,
+      path: item.path,
+      sha: item.sha,
+      html_url: item.html_url,
+      type: item.type,
+    }))
+  } else {
+    throw new Error('Not expected content response')
+  }
 }
 
 export async function getRepositoryContentHtml(

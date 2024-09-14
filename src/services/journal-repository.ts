@@ -64,13 +64,14 @@ export async function getRecords(config: Config): Promise<JournalRecord[]> {
 
     const path = monthDir.path
     const items = await getRepositoryContent(path, config)
-    result.push(
-      ...items.map((i) => ({
+    const records = items
+      .map((i) => ({
         name: i.name,
         path: i.path,
-        htmlUrl: new URL(i.html_url),
+        htmlUrl: i.html_url ? new URL(i.html_url) : null,
       }))
-    )
+      .filter((r): r is JournalRecord => !!r.htmlUrl)
+    result.push(...records)
   }
 
   return result.sort(byNameDesc)
