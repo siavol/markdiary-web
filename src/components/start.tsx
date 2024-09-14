@@ -17,7 +17,7 @@ const Start: React.FunctionComponent = () => {
         variant="contained"
         color="success"
         component={RouterLink}
-        to="/config"
+        to="/config-guide"
       >
         Start
       </Button>
