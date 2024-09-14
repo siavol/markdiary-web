@@ -4,6 +4,8 @@ import { Config, GitHubAuthConfig, saveGitHubToken } from './config-storage'
 import { GitHubApiError } from '../errors/github-error'
 import { AuthenticationError } from '../errors/authentication-error'
 
+const JournalFolder = 'journal'
+
 type DateParts = {
   fullYear: string
   month: string
@@ -15,8 +17,8 @@ export type RepositoryContentItem = {
   name: string
   path: string
   sha: string
-  html_url: string
-  type: 'dir' | 'file'
+  html_url: string | null
+  type: 'dir' | 'file' | 'submodule' | 'symlink'
 }
 
 export type GitHubAppToken = {
@@ -67,6 +69,13 @@ async function ensureResponseSuccessful(response: Response): Promise<void> {
     )
     throw error
   }
+}
+
+function notEmpty(value: string | null): string {
+  if (!value) {
+    throw new Error('Value must be a non-empty string')
+  }
+  return value
 }
 
 export async function exchangeCodeToAccessToken(
@@ -178,8 +187,8 @@ export async function writeFileContent(
 
   const { fullYear, month, day, time } = dateParts(timestamp)
 
-  const folder = 'journal'
   const filePath = [
+    JournalFolder,
     fullYear,
     month,
     `${fullYear}${month}${day}-${time}.md`,
@@ -187,30 +196,24 @@ export async function writeFileContent(
 
   const markdown = `# ${title}\n${content}`
 
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${folder}/${filePath}`
-  const headers = {
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({
+  const octokit = new Octokit({
+    auth: token,
+  })
+  await octokit.repos.createOrUpdateFileContents({
+    owner: notEmpty(owner),
+    repo: notEmpty(repo),
+    path: filePath,
     message: `${fullYear}${month}${day}-${time}`,
     committer: {
-      name: author,
-      email: email,
+      name: notEmpty(author),
+      email: notEmpty(email),
+    },
+    author: {
+      name: notEmpty(author),
+      email: notEmpty(email),
     },
     content: Buffer.from(markdown).toString('base64'),
   })
-
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers: headers,
-    body: body,
-  })
-  await ensureResponseSuccessful(response)
-
-  await response.json()
 }
 
 export async function getRepositoryContent(
@@ -220,20 +223,30 @@ export async function getRepositoryContent(
   const { owner, repo } = config.github
   const token = await getAuthToken(config)
 
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
-  const headers = {
-    Accept: 'application/vnd.github.html+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    Authorization: `Bearer ${token}`,
-  }
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: headers,
+  const octokit = new Octokit({
+    auth: token,
   })
-  await ensureResponseSuccessful(response)
 
-  return await response.json()
+  const response = await octokit.rest.repos.getContent({
+    owner: notEmpty(owner),
+    repo: notEmpty(repo),
+    path,
+  })
+  const data = response.data
+
+  if (Array.isArray(data)) {
+    return data.map((item) => ({
+      name: item.name,
+      path: item.path,
+      sha: item.sha,
+      html_url: item.html_url,
+      type: item.type,
+    }))
+  } else {
+    throw new Error(
+      'Not expected content response. Array of content items expected.'
+    )
+  }
 }
 
 export async function getRepositoryContentHtml(
@@ -243,20 +256,24 @@ export async function getRepositoryContentHtml(
   const { owner, repo } = config.github
   const token = await getAuthToken(config)
 
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
-  const headers = {
-    Accept: 'application/vnd.github.html+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    Authorization: `Bearer ${token}`,
-  }
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: headers,
+  const octokit = new Octokit({
+    auth: token,
   })
-  await ensureResponseSuccessful(response)
+  const response = await octokit.rest.repos.getContent({
+    owner: notEmpty(owner),
+    repo: notEmpty(repo),
+    path,
+    headers: {
+      Accept: 'application/vnd.github.html+json',
+    },
+  })
+  const data = response.data
 
-  return await response.text()
+  if (typeof data === 'string') {
+    return data
+  } else {
+    throw new Error('Not expected content response. String with HTML expected.')
+  }
 }
 
 export async function getRepos(config: Config): Promise<GitHubRepo[]> {

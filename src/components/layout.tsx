@@ -19,7 +19,14 @@ const Layout: React.FunctionComponent = () => {
   const { t } = useTranslation(['layout', 'general'])
   const isConfigured = hasRequiredConfiguration()
 
-  const content = navigation.state === 'idle' ? <Outlet /> : <LinearProgress />
+  const content =
+    navigation.state === 'idle' ? (
+      <Container maxWidth="md">
+        <Outlet />
+      </Container>
+    ) : (
+      <LinearProgress />
+    )
 
   const newButton = isConfigured ? (
     <Button
@@ -68,7 +75,7 @@ const Layout: React.FunctionComponent = () => {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="md">{content}</Container>
+      {content}
     </Box>
   )
 }
