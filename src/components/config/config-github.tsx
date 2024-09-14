@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 import { useTranslation } from 'react-i18next'
 import {
+  Autocomplete,
   Box,
   Button,
   Container,
@@ -10,30 +11,16 @@ import {
   Input,
   InputLabel,
   Link,
+  TextField,
   Typography,
 } from '@mui/material'
+import { useLoaderData } from 'react-router-dom'
+import { ConfigGithubData } from './config-actions'
 
 const ConfigGithub: React.FunctionComponent = () => {
-  const [config, setConfig] = useState<Config>({
-    github: {
-      owner: null,
-      repo: null,
-      auth: {
-        type: 'token',
-        token: null,
-      },
-    },
-    committer: {
-      author: null,
-      email: null,
-    },
-  })
+  const { repos } = useLoaderData() as ConfigGithubData
+  const [config, setConfig] = useState<Config>(loadConfig())
   const { t } = useTranslation(['config', 'general'])
-
-  useEffect(() => {
-    const configFromStorage = loadConfig()
-    setConfig(configFromStorage)
-  }, [])
 
   const handleChange =
     (section: keyof Config) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +33,32 @@ const ConfigGithub: React.FunctionComponent = () => {
         },
       }))
     }
+
+  const handleAuthTokenChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.target
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      github: {
+        ...prevConfig.github,
+        auth: {
+          type: 'token',
+          token: value,
+        },
+      },
+    }))
+  }
+
+  const handleRepoNameChange = (value: string | null): void => {
+    const [owner, repo] = (value || '').split('/', 2)
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      github: {
+        ...prevConfig.github,
+        owner,
+        repo,
+      },
+    }))
+  }
 
   const handleSave = (): void => {
     saveConfig(config)
@@ -86,7 +99,7 @@ const ConfigGithub: React.FunctionComponent = () => {
           name="token"
           aria-describedby="token-helper-text"
           value={config.github.auth.token || ''}
-          onChange={handleChange('github')}
+          onChange={handleAuthTokenChange}
         />
         <FormHelperText id="token-helper-text">
           {t('Your GitHub token with access to your dairy repository.')}
@@ -94,36 +107,23 @@ const ConfigGithub: React.FunctionComponent = () => {
       </FormControl>
 
       <Typography variant="h4">{t('2. Select repository')}</Typography>
-      <Box>
-        <FormControl>
-          <InputLabel htmlFor="owner-input">{t('Owner:')}</InputLabel>
-          <Input
-            type="text"
-            id="owner-input"
-            name="owner"
-            aria-describedby="owner-helper-text"
-            value={config.github.owner || ''}
-            onChange={handleChange('github')}
-          />
-          <FormHelperText id="owner-helper-text">
-            {t('The repository owner name')}
-          </FormHelperText>
-        </FormControl>
-        <FormControl>
-          <InputLabel htmlFor="repo-input">{t('Repository:')}</InputLabel>
-          <Input
-            type="text"
-            id="repo-input"
-            name="repo"
-            aria-describedby="repo-helper-text"
-            value={config.github.repo || ''}
-            onChange={handleChange('github')}
-          />
-          <FormHelperText id="repo-helper-text">
-            {t('The dairy repository name')}
-          </FormHelperText>
-        </FormControl>
-      </Box>
+      <Autocomplete
+        id="repo-name-input"
+        aria-describedby="repo-name-helper-input"
+        value={
+          config.github.owner && config.github.repo
+            ? `${config.github.owner}/${config.github.repo}`
+            : ''
+        }
+        onChange={(_event, newInputValue) => {
+          handleRepoNameChange(newInputValue)
+        }}
+        disablePortal
+        options={repos.map((r) => r.fullName)}
+        renderInput={(params) => (
+          <TextField {...params} variant="standard" label="Dairy repository" />
+        )}
+      />
 
       <Typography variant="h4">{t('3. Name yourself for git')}</Typography>
       <Box>

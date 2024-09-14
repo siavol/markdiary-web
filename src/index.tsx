@@ -9,7 +9,10 @@ import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
 import ConfigGithub from './components/config/config-github'
 import ConfigGithubCallback from './components/config/config-github-callback'
-import { githubAppTokenLoader } from './components/config/config-actions'
+import {
+  configGithubLoader,
+  githubAppTokenLoader,
+} from './components/config/config-actions'
 import {
   newRecordAction,
   recordHtmlLoader,
@@ -50,6 +53,7 @@ const router = createBrowserRouter(
         {
           path: 'config',
           element: <ConfigGithub />,
+          loader: configGithubLoader,
         },
         {
           path: 'config/github/callback',
