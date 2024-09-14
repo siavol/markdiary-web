@@ -11,7 +11,6 @@ import {
   Input,
   InputLabel,
   Link,
-  Stack,
   TextField,
   Typography,
 } from '@mui/material'
@@ -108,29 +107,23 @@ const ConfigGithub: React.FunctionComponent = () => {
       </FormControl>
 
       <Typography variant="h4">{t('2. Select repository')}</Typography>
-      <Stack>
-        <Autocomplete
-          id="repo-name-input"
-          aria-describedby="repo-name-helper-input"
-          value={
-            config.github.owner && config.github.repo
-              ? `${config.github.owner}/${config.github.repo}`
-              : ''
-          }
-          onChange={(_event, newInputValue) => {
-            handleRepoNameChange(newInputValue)
-          }}
-          disablePortal
-          options={repos.map((r) => r.fullName)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="standard"
-              label="Dairy repository"
-            />
-          )}
-        />
-      </Stack>
+      <Autocomplete
+        id="repo-name-input"
+        aria-describedby="repo-name-helper-input"
+        value={
+          config.github.owner && config.github.repo
+            ? `${config.github.owner}/${config.github.repo}`
+            : ''
+        }
+        onChange={(_event, newInputValue) => {
+          handleRepoNameChange(newInputValue)
+        }}
+        disablePortal
+        options={repos.map((r) => r.fullName)}
+        renderInput={(params) => (
+          <TextField {...params} variant="standard" label="Dairy repository" />
+        )}
+      />
 
       <Typography variant="h4">{t('3. Name yourself for git')}</Typography>
       <Box>
