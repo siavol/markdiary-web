@@ -16,6 +16,17 @@ const ConfigGuide: React.FunctionComponent = () => {
   const { t } = useTranslation(['config', 'guide'])
   const [activeStep, setActiveStep] = React.useState(0)
 
+  const gotoStep = (name: 'create-repo' | 'auth-github'): void => {
+    switch (name) {
+      case 'create-repo':
+        setActiveStep(0)
+        return
+      case 'auth-github':
+        setActiveStep(1)
+        return
+    }
+  }
+
   return (
     <Container>
       <Stepper orientation="vertical" activeStep={activeStep}>
@@ -27,7 +38,7 @@ const ConfigGuide: React.FunctionComponent = () => {
               repository where your diary entries will be securely stored. For
               privacy, we recommend creating a{' '}
               <strong>private repository</strong> unless you want to make your
-              diary publicly accessible.
+              diary publicly accessible. Create repository then continue.
             </Typography>
             <Link href="https://github.com/new" target="_blank">
               {t('Create a new repository')}
@@ -36,7 +47,7 @@ const ConfigGuide: React.FunctionComponent = () => {
               <Button
                 variant="contained"
                 sx={{ mt: 1, mr: 1 }}
-                onClick={() => setActiveStep(1)}
+                onClick={() => gotoStep('auth-github')}
               >
                 {t('Continue')}
               </Button>
