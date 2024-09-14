@@ -227,11 +227,10 @@ export async function getRepositoryContent(
     auth: token,
   })
 
-  const response = await octokit.repos.getContent({
+  const response = await octokit.rest.repos.getContent({
     owner: notEmpty(owner),
     repo: notEmpty(repo),
     path,
-    mediaType: { format: 'application/vnd.github.html+json' },
   })
   const data = response.data
 
@@ -244,7 +243,9 @@ export async function getRepositoryContent(
       type: item.type,
     }))
   } else {
-    throw new Error('Not expected content response')
+    throw new Error(
+      'Not expected content response. Array of content items expected.'
+    )
   }
 }
 
@@ -255,20 +256,24 @@ export async function getRepositoryContentHtml(
   const { owner, repo } = config.github
   const token = await getAuthToken(config)
 
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
-  const headers = {
-    Accept: 'application/vnd.github.html+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    Authorization: `Bearer ${token}`,
-  }
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: headers,
+  const octokit = new Octokit({
+    auth: token,
   })
-  await ensureResponseSuccessful(response)
+  const response = await octokit.rest.repos.getContent({
+    owner: notEmpty(owner),
+    repo: notEmpty(repo),
+    path,
+    headers: {
+      Accept: 'application/vnd.github.html+json',
+    },
+  })
+  const data = response.data
 
-  return await response.text()
+  if (typeof data === 'string') {
+    return data
+  } else {
+    throw new Error('Not expected content response. String with HTML expected.')
+  }
 }
 
 export async function getRepos(config: Config): Promise<GitHubRepo[]> {

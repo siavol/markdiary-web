@@ -95,7 +95,7 @@ export async function getRecordHtml(
   config: Config
 ): Promise<string> {
   const { year, month } = dateFromRecordId(recordId)
-  const path = `${rootJournalPath}/${year}/${month}/${recordId}/`
+  const path = `${rootJournalPath}/${year}/${month}/${recordId}`
 
   return await getRepositoryContentHtml(path, config)
 }
