@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 import { useTranslation } from 'react-i18next'
 import {
+  Autocomplete,
   Box,
   Button,
   Container,
@@ -10,10 +11,15 @@ import {
   Input,
   InputLabel,
   Link,
+  Stack,
+  TextField,
   Typography,
 } from '@mui/material'
+import { useLoaderData } from 'react-router-dom'
+import { ConfigGithubData } from './config-actions'
 
 const ConfigGithub: React.FunctionComponent = () => {
+  const { repos } = useLoaderData() as ConfigGithubData
   const [config, setConfig] = useState<Config>({
     github: {
       owner: null,
@@ -46,6 +52,20 @@ const ConfigGithub: React.FunctionComponent = () => {
         },
       }))
     }
+
+  const applyChange = (
+    section: keyof Config,
+    name: string,
+    value: string
+  ): void => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      [section]: {
+        ...prevConfig[section],
+        [name]: value,
+      },
+    }))
+  }
 
   const handleSave = (): void => {
     saveConfig(config)
@@ -94,36 +114,34 @@ const ConfigGithub: React.FunctionComponent = () => {
       </FormControl>
 
       <Typography variant="h4">{t('2. Select repository')}</Typography>
-      <Box>
-        <FormControl>
-          <InputLabel htmlFor="owner-input">{t('Owner:')}</InputLabel>
-          <Input
-            type="text"
-            id="owner-input"
-            name="owner"
-            aria-describedby="owner-helper-text"
-            value={config.github.owner || ''}
-            onChange={handleChange('github')}
-          />
-          <FormHelperText id="owner-helper-text">
-            {t('The repository owner name')}
-          </FormHelperText>
-        </FormControl>
-        <FormControl>
-          <InputLabel htmlFor="repo-input">{t('Repository:')}</InputLabel>
-          <Input
-            type="text"
-            id="repo-input"
-            name="repo"
-            aria-describedby="repo-helper-text"
-            value={config.github.repo || ''}
-            onChange={handleChange('github')}
-          />
-          <FormHelperText id="repo-helper-text">
-            {t('The dairy repository name')}
-          </FormHelperText>
-        </FormControl>
-      </Box>
+      <Stack>
+        <Autocomplete
+          id="owner-input"
+          aria-describedby="owner-helper-input"
+          inputValue={config.github.owner || ''}
+          onInputChange={(_event, newInputValue) => {
+            applyChange('github', 'owner', newInputValue)
+          }}
+          freeSolo
+          options={[...new Set(repos.map((r) => r.owner))]}
+          renderInput={(params) => (
+            <TextField {...params} label="The repository owner" />
+          )}
+        />
+        <Autocomplete
+          id="repo-input"
+          aria-describedby="repo-helper-input"
+          inputValue={config.github.repo || ''}
+          onInputChange={(_event, newInputValue) => {
+            applyChange('github', 'repo', newInputValue)
+          }}
+          freeSolo
+          options={[...new Set(repos.map((r) => r.name))]}
+          renderInput={(params) => (
+            <TextField {...params} label="The repository name" />
+          )}
+        />
+      </Stack>
 
       <Typography variant="h4">{t('3. Name yourself for git')}</Typography>
       <Box>

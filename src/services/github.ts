@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer'
+import { Endpoints } from '@octokit/types'
 import { Config, GitHubAuthConfig, saveGitHubToken } from './config-storage'
 import { GitHubApiError } from '../errors/github-error'
 import { AuthenticationError } from '../errors/authentication-error'
@@ -25,6 +26,12 @@ export type GitHubAppToken = {
   refresh_token_expires_in: string
   scope: string
   token_type: string
+}
+
+export type GitHubRepo = {
+  owner: string
+  name: string
+  fullName: string
 }
 
 function dateParts(date: Date): DateParts {
@@ -250,4 +257,29 @@ export async function getRepositoryContentHtml(
   await ensureResponseSuccessful(response)
 
   return await response.text()
+}
+
+export async function getRepos(config: Config): Promise<GitHubRepo[]> {
+  const token = await getAuthToken(config)
+
+  const url = `https://api.github.com/user/repos`
+  const headers = {
+    Accept: 'application/vnd.github.html+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    Authorization: `Bearer ${token}`,
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: headers,
+  })
+  await ensureResponseSuccessful(response)
+
+  const repos =
+    (await response.json()) as Endpoints['GET /user/repos']['response']['data']
+  return repos.map((r) => ({
+    owner: r.owner.login,
+    name: r.name,
+    fullName: r.full_name,
+  }))
 }
