@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { Endpoints } from '@octokit/types'
+import { Octokit } from '@octokit/rest'
 import { Config, GitHubAuthConfig, saveGitHubToken } from './config-storage'
 import { GitHubApiError } from '../errors/github-error'
 import { AuthenticationError } from '../errors/authentication-error'
@@ -261,22 +261,12 @@ export async function getRepositoryContentHtml(
 
 export async function getRepos(config: Config): Promise<GitHubRepo[]> {
   const token = await getAuthToken(config)
-
-  const url = `https://api.github.com/user/repos`
-  const headers = {
-    Accept: 'application/vnd.github.html+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    Authorization: `Bearer ${token}`,
-  }
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: headers,
+  const octokit = new Octokit({
+    auth: token,
   })
-  await ensureResponseSuccessful(response)
+  const response = await octokit.rest.repos.listForAuthenticatedUser()
 
-  const repos =
-    (await response.json()) as Endpoints['GET /user/repos']['response']['data']
+  const repos = response.data
   return repos.map((r) => ({
     owner: r.owner.login,
     name: r.name,

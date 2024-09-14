@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 import { useTranslation } from 'react-i18next'
 import {
@@ -20,31 +20,8 @@ import { ConfigGithubData } from './config-actions'
 
 const ConfigGithub: React.FunctionComponent = () => {
   const { repos } = useLoaderData() as ConfigGithubData
-  const [config, setConfig] = useState<Config>({
-    github: {
-      owner: null,
-      repo: null,
-      auth: {
-        type: 'token',
-        token: null,
-      },
-    },
-    committer: {
-      author: null,
-      email: null,
-    },
-  })
-  const [repoFullName, setRepoFullName] = useState(
-    config.github.owner && config.github.repo
-      ? `${config.github.owner}/${config.github.repo}`
-      : ''
-  )
+  const [config, setConfig] = useState<Config>(loadConfig())
   const { t } = useTranslation(['config', 'general'])
-
-  useEffect(() => {
-    const configFromStorage = loadConfig()
-    setConfig(configFromStorage)
-  }, [])
 
   const handleChange =
     (section: keyof Config) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +35,22 @@ const ConfigGithub: React.FunctionComponent = () => {
       }))
     }
 
-  const handleRepoNameChange = (value: string): void => {
-    setRepoFullName(value)
-    const [owner, repo] = value.split('/', 2)
+  const handleAuthTokenChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.target
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      github: {
+        ...prevConfig.github,
+        auth: {
+          type: 'token',
+          token: value,
+        },
+      },
+    }))
+  }
+
+  const handleRepoNameChange = (value: string | null): void => {
+    const [owner, repo] = (value || '').split('/', 2)
     setConfig((prevConfig) => ({
       ...prevConfig,
       github: {
@@ -70,20 +60,6 @@ const ConfigGithub: React.FunctionComponent = () => {
       },
     }))
   }
-
-  // const applyChange = (
-  //   section: keyof Config,
-  //   name: string,
-  //   value: string
-  // ): void => {
-  //   setConfig((prevConfig) => ({
-  //     ...prevConfig,
-  //     [section]: {
-  //       ...prevConfig[section],
-  //       [name]: value,
-  //     },
-  //   }))
-  // }
 
   const handleSave = (): void => {
     saveConfig(config)
@@ -124,7 +100,7 @@ const ConfigGithub: React.FunctionComponent = () => {
           name="token"
           aria-describedby="token-helper-text"
           value={config.github.auth.token || ''}
-          onChange={handleChange('github')}
+          onChange={handleAuthTokenChange}
         />
         <FormHelperText id="token-helper-text">
           {t('Your GitHub token with access to your dairy repository.')}
@@ -136,8 +112,12 @@ const ConfigGithub: React.FunctionComponent = () => {
         <Autocomplete
           id="repo-name-input"
           aria-describedby="repo-name-helper-input"
-          inputValue={repoFullName}
-          onInputChange={(_event, newInputValue) => {
+          value={
+            config.github.owner && config.github.repo
+              ? `${config.github.owner}/${config.github.repo}`
+              : ''
+          }
+          onChange={(_event, newInputValue) => {
             handleRepoNameChange(newInputValue)
           }}
           disablePortal
