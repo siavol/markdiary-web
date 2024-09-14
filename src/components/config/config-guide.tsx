@@ -20,13 +20,13 @@ const ConfigGuide: React.FunctionComponent = () => {
   const apos = "'"
 
   const gotoStep = (
-    name: 'create-repo' | 'auth-github' | 'manual-auth-token'
+    name: 'create-repo' | 'auth-github-app' | 'manual-auth-token'
   ): void => {
     switch (name) {
       case 'create-repo':
         setActiveStep(0)
         return
-      case 'auth-github':
+      case 'auth-github-app':
         setActiveStep(1)
         return
       case 'manual-auth-token':
@@ -55,7 +55,7 @@ const ConfigGuide: React.FunctionComponent = () => {
               <Button
                 variant="contained"
                 sx={{ mt: 1, mr: 1 }}
-                onClick={() => gotoStep('auth-github')}
+                onClick={() => gotoStep('auth-github-app')}
               >
                 {t('Continue')}
               </Button>
@@ -144,6 +144,22 @@ const ConfigGuide: React.FunctionComponent = () => {
             <Box>
               <Button variant="contained" sx={{ mt: 1 }}>
                 {t('Continue')}
+              </Button>
+            </Box>
+
+            {/* Go Back to App Authentication */}
+            <Box mt={2}>
+              <Typography>
+                Prefer an easier way? You can go back and{' '}
+                <strong>install the Markdairy GitHub App</strong> instead.
+              </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ mt: 1 }}
+                onClick={() => gotoStep('auth-github-app')} // Implement this handler to go back to the previous step
+              >
+                {t('Go Back to App Authentication')}
               </Button>
             </Box>
           </StepContent>
