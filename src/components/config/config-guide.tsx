@@ -124,10 +124,23 @@ const ConfigGuide: React.FunctionComponent = () => {
               generating the token, make sure you enable <code>Contents</code>{' '}
               repository permissions and set it to <strong>write access</strong>
               .
-              <br />
-              Once you{apos}ve created your token, enter it in the field below
-              to authenticate.
             </Typography>
+
+            {/* Link to GitHub Token Creation */}
+            <Box mt={2}>
+              <Typography>
+                You can create a token by visiting the{' '}
+                <Link
+                  href="https://github.com/settings/tokens?type=beta"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  GitHub Token Creation Page
+                </Link>
+                . Make sure to copy the token and paste it below once it{apos}s
+                created.
+              </Typography>
+            </Box>
 
             {/* Token Input */}
             <Box mt={2}>
