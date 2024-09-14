@@ -14,10 +14,11 @@ import { useTranslation } from 'react-i18next'
 
 const ConfigGuide: React.FunctionComponent = () => {
   const { t } = useTranslation(['config', 'guide'])
+  const [activeStep, setActiveStep] = React.useState(0)
 
   return (
     <Container>
-      <Stepper orientation="vertical">
+      <Stepper orientation="vertical" activeStep={activeStep}>
         <Step key="create-repo">
           <StepLabel>{t('Create GitHub repository')}</StepLabel>
           <StepContent>
@@ -32,7 +33,11 @@ const ConfigGuide: React.FunctionComponent = () => {
               {t('Create a new repository')}
             </Link>
             <Box>
-              <Button variant="contained" sx={{ mt: 1, mr: 1 }}>
+              <Button
+                variant="contained"
+                sx={{ mt: 1, mr: 1 }}
+                onClick={() => setActiveStep(1)}
+              >
                 {t('Continue')}
               </Button>
             </Box>
