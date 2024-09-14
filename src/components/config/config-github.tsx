@@ -34,6 +34,11 @@ const ConfigGithub: React.FunctionComponent = () => {
       email: null,
     },
   })
+  const [repoFullName, setRepoFullName] = useState(
+    config.github.owner && config.github.repo
+      ? `${config.github.owner}/${config.github.repo}`
+      : ''
+  )
   const { t } = useTranslation(['config', 'general'])
 
   useEffect(() => {
@@ -53,19 +58,32 @@ const ConfigGithub: React.FunctionComponent = () => {
       }))
     }
 
-  const applyChange = (
-    section: keyof Config,
-    name: string,
-    value: string
-  ): void => {
+  const handleRepoNameChange = (value: string): void => {
+    setRepoFullName(value)
+    const [owner, repo] = value.split('/', 2)
     setConfig((prevConfig) => ({
       ...prevConfig,
-      [section]: {
-        ...prevConfig[section],
-        [name]: value,
+      github: {
+        ...prevConfig.github,
+        owner,
+        repo,
       },
     }))
   }
+
+  // const applyChange = (
+  //   section: keyof Config,
+  //   name: string,
+  //   value: string
+  // ): void => {
+  //   setConfig((prevConfig) => ({
+  //     ...prevConfig,
+  //     [section]: {
+  //       ...prevConfig[section],
+  //       [name]: value,
+  //     },
+  //   }))
+  // }
 
   const handleSave = (): void => {
     saveConfig(config)
@@ -116,29 +134,20 @@ const ConfigGithub: React.FunctionComponent = () => {
       <Typography variant="h4">{t('2. Select repository')}</Typography>
       <Stack>
         <Autocomplete
-          id="owner-input"
-          aria-describedby="owner-helper-input"
-          inputValue={config.github.owner || ''}
+          id="repo-name-input"
+          aria-describedby="repo-name-helper-input"
+          inputValue={repoFullName}
           onInputChange={(_event, newInputValue) => {
-            applyChange('github', 'owner', newInputValue)
+            handleRepoNameChange(newInputValue)
           }}
-          freeSolo
-          options={[...new Set(repos.map((r) => r.owner))]}
+          disablePortal
+          options={repos.map((r) => r.fullName)}
           renderInput={(params) => (
-            <TextField {...params} label="The repository owner" />
-          )}
-        />
-        <Autocomplete
-          id="repo-input"
-          aria-describedby="repo-helper-input"
-          inputValue={config.github.repo || ''}
-          onInputChange={(_event, newInputValue) => {
-            applyChange('github', 'repo', newInputValue)
-          }}
-          freeSolo
-          options={[...new Set(repos.map((r) => r.name))]}
-          renderInput={(params) => (
-            <TextField {...params} label="The repository name" />
+            <TextField
+              {...params}
+              variant="standard"
+              label="Dairy repository"
+            />
           )}
         />
       </Stack>
