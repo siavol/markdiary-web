@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
 import { ConfigGithubData } from './config-actions'
+import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 
 const ConfigGithub: React.FunctionComponent = () => {
   const { repos } = useLoaderData() as ConfigGithubData
@@ -64,9 +65,7 @@ const ConfigGithub: React.FunctionComponent = () => {
     saveConfig(config)
   }
 
-  const appName = process.env.REACT_APP_GITHUB_APP_NAME
   const clientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
-  const gitHubAppInstallUrl = `https://github.com/apps/${appName}/installations/new/`
   const gitHubAppLoginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`
 
   return (
@@ -79,15 +78,11 @@ const ConfigGithub: React.FunctionComponent = () => {
 
       <Typography variant="h5">{t('With GitHub App')}</Typography>
       <Box>
-        <Link href={gitHubAppInstallUrl}>
-          {t('Install Markdairy GitHub App')}
-        </Link>
+        <InstallGitHubApp />
         <Typography variant="body1" display="inline">
           {t(' or ')}
         </Typography>
-        <Link href={gitHubAppLoginUrl}>
-          {t('Login to Markdairy GitHub App')}
-        </Link>
+        <LoginToGitHubApp />
       </Box>
 
       <Typography variant="h5">{t('OR with GitHub Token')}</Typography>

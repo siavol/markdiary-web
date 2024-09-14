@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 
 const ConfigGuide: React.FunctionComponent = () => {
   const { t } = useTranslation(['config', 'guide'])
@@ -80,23 +81,8 @@ const ConfigGuide: React.FunctionComponent = () => {
               <strong>{t('Login to App')}</strong> to continue.
             </Typography>
             <Box mt={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                href="https://github.com/apps/markdairy/installations/new"
-                target="_blank"
-                sx={{ mr: 2 }}
-              >
-                {t('Install App')}
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                href="https://github.com/login/oauth/authorize?client_id=your-client-id" // replace with actual login URL
-                target="_blank"
-              >
-                {t('Login to App')}
-              </Button>
+              <InstallGitHubApp />
+              <LoginToGitHubApp />
             </Box>
 
             <Box mt={2}>
