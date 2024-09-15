@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Box,
@@ -10,6 +10,15 @@ import {
   Typography,
 } from '@mui/material'
 import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
+import GithubRepoSelect from './github-repo'
+import {
+  ConfigStatus,
+  GitHubRepoConfig,
+  hasConfigured,
+  loadConfig,
+  saveGitHubRepo,
+} from '../../services/config-storage'
+import { getRepos, GitHubRepo } from '../../services/github'
 
 type OnContinueProps = {
   onContinue: () => void
@@ -186,13 +195,50 @@ export const AuthGithubTokenStep: React.FunctionComponent<
 export const SelectRepoStep: React.FunctionComponent<OnContinueProps> = ({
   onContinue,
 }) => {
+  const config = loadConfig()
+
   const { t } = useTranslation(['config', 'guide'])
+  const [repos, setRepos] = useState<GitHubRepo[]>([])
+  const [value, setValue] = useState<GitHubRepoConfig>(config.github)
+
+  useEffect(() => {
+    if (hasConfigured(ConfigStatus.Auth)) {
+      getRepos(config).then((data) => setRepos(data))
+    }
+  }, [config])
+
+  const saveRepoAndContinue = (): void => {
+    saveGitHubRepo(value)
+    onContinue()
+  }
 
   return (
     <>
-      <StepLabel>{t('Select repostiory')}</StepLabel>
+      <StepLabel>{t('Select the GitHub Repository')}</StepLabel>
       <StepContent>
-        <Typography>TBD</Typography>
+        <Typography>
+          Now, select the GitHub repository you created in the previous step.
+          This will be the secure location where your journal entries are
+          stored. Ensure you choose the correct repository to keep your personal
+          entries safe and organized.
+        </Typography>
+
+        {/* Repository Select Input */}
+        <Box mt={2}>
+          <GithubRepoSelect value={value} repos={repos} onChange={setValue} />
+        </Box>
+
+        {/* Continue Button */}
+        <Box mt={2}>
+          <Button
+            variant="contained"
+            sx={{ mt: 1, mr: 1 }}
+            onClick={saveRepoAndContinue}
+            disabled={!value.owner || !value.repo}
+          >
+            Continue
+          </Button>
+        </Box>
       </StepContent>
     </>
   )

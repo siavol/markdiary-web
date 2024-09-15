@@ -1,13 +1,16 @@
 export type Config = {
-  github: {
-    owner: string | null
-    repo: string | null
+  github: GitHubRepoConfig & {
     auth: GitHubAuthConfig
   }
   committer: {
     author: string | null
     email: string | null
   }
+}
+
+export type GitHubRepoConfig = {
+  owner: string | null
+  repo: string | null
 }
 
 type GitHubTokenAuthConfig = {
@@ -79,6 +82,15 @@ export function saveGitHubToken(authConfig: GitHubAuthConfig): void {
   }
 }
 
+export function saveGitHubRepo(config: GitHubRepoConfig): void {
+  if (!config.owner || !config.repo) {
+    throw new Error('Incomplete repo config can not be saved.')
+  }
+
+  localStorage.setItem(GithubOwnerStorageItem, config.owner)
+  localStorage.setItem(GithubRepoStorageItem, config.repo)
+}
+
 export function saveConfig(config: Config): void {
   if (
     !config.github.owner ||
@@ -90,9 +102,7 @@ export function saveConfig(config: Config): void {
     throw new Error('Incomplete config can not be saved.')
   }
 
-  localStorage.setItem(GithubOwnerStorageItem, config.github.owner)
-  localStorage.setItem(GithubRepoStorageItem, config.github.repo)
-
+  saveGitHubRepo(config.github)
   saveGitHubToken(config.github.auth)
 
   localStorage.setItem(GithubAuthorStorageItem, config.committer.author)

@@ -1,11 +1,7 @@
 import React from 'react'
 import { Container, Step, StepLabel, Stepper } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import {
-  ConfigStatus,
-  getConfigStatus,
-  isStatusHasConfigured,
-} from '../../services/config-storage'
+import { ConfigStatus, getConfigStatus } from '../../services/config-storage'
 import {
   AuthGithubAppStep,
   AuthGithubTokenStep,
@@ -23,8 +19,9 @@ type ConfigSteps =
 function GetStepForConfigStatus(): ConfigSteps {
   const status = getConfigStatus()
 
-  if (!isStatusHasConfigured(status, ConfigStatus.Auth)) return 'create-repo'
-  if (!isStatusHasConfigured(status, ConfigStatus.Repo)) return 'select-repo'
+  if (!(status & ConfigStatus.Auth)) return 'create-repo'
+  if (!(status & ConfigStatus.Repo)) return 'select-repo'
+  if (!(status & ConfigStatus.Author)) return 'configure-author'
 
   return 'select-repo'
 }
