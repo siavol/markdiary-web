@@ -6,6 +6,7 @@ import {
   AuthGithubAppStep,
   AuthGithubTokenStep,
   CreateRepoStep,
+  SelectRepoStep,
 } from './config-guide-steps'
 
 type ConfigSteps =
@@ -13,6 +14,7 @@ type ConfigSteps =
   | 'auth-github-app'
   | 'manual-auth-token'
   | 'select-repo'
+  | 'configure-author'
 
 function GetStepForConfigStatus(): ConfigSteps {
   const status = getConfigStatus()
@@ -34,6 +36,8 @@ const ConfigGuide: React.FunctionComponent = () => {
         return 2
       case 'select-repo':
         return 3
+      case 'configure-author':
+        return 4
       default:
         return 0
     }
@@ -66,7 +70,7 @@ const ConfigGuide: React.FunctionComponent = () => {
           />
         </Step>
         <Step key="select-repo">
-          <StepLabel>{t('Select repostiory')}</StepLabel>
+          <SelectRepoStep onContinue={gotoStep('configure-author')} />
         </Step>
         <Step key="configure-author">
           <StepLabel>{t('Setup your name')}</StepLabel>

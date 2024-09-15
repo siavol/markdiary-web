@@ -182,3 +182,18 @@ export const AuthGithubTokenStep: React.FunctionComponent<
     </>
   )
 }
+
+export const SelectRepoStep: React.FunctionComponent<OnContinueProps> = ({
+  onContinue,
+}) => {
+  const { t } = useTranslation(['config', 'guide'])
+
+  return (
+    <>
+      <StepLabel>{t('Select repostiory')}</StepLabel>
+      <StepContent>
+        <Typography>TBD</Typography>
+      </StepContent>
+    </>
+  )
+}
