@@ -1,10 +1,12 @@
-import { ActionFunctionArgs } from 'react-router-dom'
+import { ActionFunctionArgs, redirect } from 'react-router-dom'
 import {
   exchangeCodeToAccessToken,
   getRepos,
   GitHubRepo,
 } from '../../services/github'
 import {
+  ConfigStatus,
+  getConfigStatus,
   hasRequiredConfiguration,
   loadConfig,
   saveGitHubToken,
@@ -19,7 +21,7 @@ export type ConfigGithubData = {
 
 export async function githubAppTokenLoader(
   args: ActionFunctionArgs
-): Promise<GithubAppStatus> {
+): Promise<Response | GithubAppStatus> {
   const url = new URL(args.request.url)
   const params = new URLSearchParams(url.search)
 
@@ -45,7 +47,12 @@ export async function githubAppTokenLoader(
 
   saveGitHubToken(tokenData)
 
-  return 'app-installed'
+  const configStatus = getConfigStatus()
+  if (configStatus === ConfigStatus.Full) {
+    return redirect('/config')
+  } else {
+    return redirect('/config-guide')
+  }
 }
 
 export async function configGithubLoader(): Promise<ConfigGithubData> {

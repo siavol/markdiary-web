@@ -27,12 +27,7 @@ export const LoginToGitHubApp: React.FunctionComponent = () => {
   const gitHubAppLoginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`
 
   return (
-    <Button
-      variant="outlined"
-      color="secondary"
-      href={gitHubAppLoginUrl}
-      target="_blank"
-    >
+    <Button variant="outlined" color="secondary" href={gitHubAppLoginUrl}>
       {t('Login to App')}
     </Button>
   )

@@ -23,6 +23,14 @@ type GitHubAppAuthConfig = {
 }
 export type GitHubAuthConfig = GitHubTokenAuthConfig | GitHubAppAuthConfig
 
+export enum ConfigStatus {
+  None = 0,
+  Auth = 1,
+  Repo = 2,
+  Author = 4,
+  Full = Auth | Repo | Author,
+}
+
 const GithubOwnerStorageItem = 'markdiary.github.owner'
 const GithubRepoStorageItem = 'markdiary.github.repo'
 const GithubAuthTypeStorageItem = 'markdiary.github.auth.type'
@@ -136,7 +144,31 @@ export function loadConfig(): Config {
   }
 }
 
+export function getConfigStatus(): ConfigStatus {
+  let result = ConfigStatus.None
+
+  if (localStorage.getItem(GithubAuthTokenStorageItem)) {
+    result = result | ConfigStatus.Auth
+  }
+
+  if (
+    localStorage.getItem(GithubOwnerStorageItem) &&
+    localStorage.getItem(GithubRepoStorageItem)
+  ) {
+    result = result | ConfigStatus.Repo
+  }
+
+  if (
+    localStorage.getItem(GithubAuthorStorageItem) &&
+    localStorage.getItem(GithubEmailStorageItem)
+  ) {
+    result = result | ConfigStatus.Author
+  }
+
+  return result
+}
+
 export function hasRequiredConfiguration(): boolean {
-  const requiredItems = [GithubAuthTokenStorageItem]
-  return requiredItems.every((item) => localStorage.getItem(item))
+  const status = getConfigStatus()
+  return !!(status & ConfigStatus.Auth)
 }

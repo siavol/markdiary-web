@@ -13,27 +13,49 @@ import {
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
+import { ConfigStatus, getConfigStatus } from '../../services/config-storage'
+
+type ConfigSteps =
+  | 'create-repo'
+  | 'auth-github-app'
+  | 'manual-auth-token'
+  | 'select-repo'
+
+function GetStepForConfigStatus(): ConfigSteps {
+  const status = getConfigStatus()
+
+  if (!(status & ConfigStatus.Auth)) return 'create-repo'
+  if (!(status & ConfigStatus.Repo)) return 'select-repo'
+
+  return 'select-repo'
+}
+
+const apos = "'"
+const space = ' '
 
 const ConfigGuide: React.FunctionComponent = () => {
-  const { t } = useTranslation(['config', 'guide'])
-  const [activeStep, setActiveStep] = React.useState(0)
-
-  const apos = "'"
-
-  const gotoStep = (
-    name: 'create-repo' | 'auth-github-app' | 'manual-auth-token'
-  ): void => {
+  const getStepNo = (name: ConfigSteps): number => {
     switch (name) {
       case 'create-repo':
-        setActiveStep(0)
-        return
+        return 0
       case 'auth-github-app':
-        setActiveStep(1)
-        return
+        return 1
       case 'manual-auth-token':
-        setActiveStep(2)
-        return
+        return 2
+      case 'select-repo':
+        return 3
+      default:
+        return 0
     }
+  }
+
+  const { t } = useTranslation(['config', 'guide'])
+  const [activeStep, setActiveStep] = React.useState(
+    getStepNo(GetStepForConfigStatus())
+  )
+
+  const gotoStep = (step: ConfigSteps): void => {
+    setActiveStep(getStepNo(step))
   }
 
   return (
@@ -45,7 +67,7 @@ const ConfigGuide: React.FunctionComponent = () => {
             <Typography>
               Before you begin journaling, you{apos}ll need to create a GitHub
               repository where your diary entries will be securely stored. For
-              privacy, we recommend creating a{' '}
+              privacy, we recommend creating a{space}
               <strong>private repository</strong> unless you want to make your
               diary publicly accessible. Create repository then continue.
             </Typography>
@@ -63,21 +85,21 @@ const ConfigGuide: React.FunctionComponent = () => {
             </Box>
           </StepContent>
         </Step>
-        <Step>
-          <StepLabel key="auth-github">
+        <Step key="auth-github">
+          <StepLabel>
             {t('Authenticate via Markdairy GitHub App (Recommended)')}
           </StepLabel>
           <StepContent>
             <Typography>
-              The recommended way to authenticate is by using the{' '}
+              The recommended way to authenticate is by using the{space}
               <strong>Markdairy GitHub App</strong>. This automates the token
               management process, including creating, refreshing, and limiting
               repository access.
               <br />
-              If you haven{apos}t installed the app yet, click{' '}
+              If you haven{apos}t installed the app yet, click{space}
               <strong>{t('Install App')}</strong>.
               <br />
-              If you{apos}ve already installed the app, click{' '}
+              If you{apos}ve already installed the app, click{space}
               <strong>{t('Login to App')}</strong> to continue.
             </Typography>
             <Box mt={2}>
@@ -87,7 +109,7 @@ const ConfigGuide: React.FunctionComponent = () => {
 
             <Box mt={2}>
               <Typography>
-                If you prefer to manually configure the token, you can{' '}
+                If you prefer to manually configure the token, you can{space}
                 <Button
                   variant="text"
                   onClick={() => gotoStep('manual-auth-token')}
@@ -107,7 +129,8 @@ const ConfigGuide: React.FunctionComponent = () => {
             <Typography>
               If you prefer not to use the GitHub App, you can manually create a
               personal access token with the required permissions. When
-              generating the token, make sure you enable <code>Contents</code>{' '}
+              generating the token, make sure you enable <code>Contents</code>
+              {space}
               repository permissions and set it to <strong>write access</strong>
               .
             </Typography>
@@ -149,7 +172,7 @@ const ConfigGuide: React.FunctionComponent = () => {
             {/* Go Back to App Authentication */}
             <Box mt={2}>
               <Typography>
-                Prefer an easier way? You can go back and{' '}
+                Prefer an easier way? You can go back and{space}
                 <strong>install the Markdairy GitHub App</strong> instead.
               </Typography>
               <Button
@@ -163,11 +186,11 @@ const ConfigGuide: React.FunctionComponent = () => {
             </Box>
           </StepContent>
         </Step>
-        <Step>
-          <StepLabel key="select-repo">{t('Select repostiory')}</StepLabel>
+        <Step key="select-repo">
+          <StepLabel>{t('Select repostiory')}</StepLabel>
         </Step>
-        <Step>
-          <StepLabel key="configure-author">{t('Setup your name')}</StepLabel>
+        <Step key="configure-author">
+          <StepLabel>{t('Setup your name')}</StepLabel>
         </Step>
       </Stepper>
     </Container>

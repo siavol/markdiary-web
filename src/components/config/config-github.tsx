@@ -10,7 +10,6 @@ import {
   FormHelperText,
   Input,
   InputLabel,
-  Link,
   TextField,
   Typography,
 } from '@mui/material'
@@ -64,9 +63,6 @@ const ConfigGithub: React.FunctionComponent = () => {
   const handleSave = (): void => {
     saveConfig(config)
   }
-
-  const clientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
-  const gitHubAppLoginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`
 
   return (
     <Container>
