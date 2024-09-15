@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, redirect } from 'react-router-dom'
 import {
-  hasRequiredConfiguration,
+  ConfigStatus,
+  hasConfigured,
   loadConfig,
 } from '../../services/config-storage'
 import {
@@ -42,7 +43,7 @@ export async function newRecordAction(
 }
 
 export async function recordsLoader(): Promise<Response | JournalRecord[]> {
-  if (hasRequiredConfiguration()) {
+  if (hasConfigured(ConfigStatus.Full)) {
     const config = loadConfig()
     try {
       const records = await getRecords(config)

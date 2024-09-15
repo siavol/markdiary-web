@@ -7,7 +7,7 @@ import {
 import {
   ConfigStatus,
   getConfigStatus,
-  hasRequiredConfiguration,
+  hasConfigured,
   loadConfig,
   saveGitHubToken,
 } from '../../services/config-storage'
@@ -56,7 +56,7 @@ export async function githubAppTokenLoader(
 }
 
 export async function configGithubLoader(): Promise<ConfigGithubData> {
-  if (!hasRequiredConfiguration()) {
+  if (!hasConfigured(ConfigStatus.Auth)) {
     return {
       repos: [],
     }

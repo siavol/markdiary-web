@@ -12,12 +12,12 @@ import {
   LinearProgress,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { hasRequiredConfiguration } from '../services/config-storage'
+import { ConfigStatus, hasConfigured } from '../services/config-storage'
 
 const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
   const { t } = useTranslation(['layout', 'general'])
-  const isConfigured = hasRequiredConfiguration()
+  const isConfigured = hasConfigured(ConfigStatus.Full)
 
   const content =
     navigation.state === 'idle' ? (

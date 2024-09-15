@@ -168,7 +168,14 @@ export function getConfigStatus(): ConfigStatus {
   return result
 }
 
-export function hasRequiredConfiguration(): boolean {
+export function isStatusHasConfigured(
+  current: ConfigStatus,
+  required: ConfigStatus
+): boolean {
+  return (current & required) == required
+}
+
+export function hasConfigured(required: ConfigStatus): boolean {
   const status = getConfigStatus()
-  return !!(status & ConfigStatus.Auth)
+  return isStatusHasConfigured(status, required)
 }
