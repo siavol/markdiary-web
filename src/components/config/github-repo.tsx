@@ -41,7 +41,7 @@ const GithubRepoSelect: React.FunctionComponent<GithubRepoSelectProps> = ({
       disablePortal
       options={repos.map((r) => r.fullName)}
       renderInput={(params) => (
-        <TextField {...params} variant="standard" label="Dairy repository" />
+        <TextField {...params} label="Dairy repository" />
       )}
     />
   )
