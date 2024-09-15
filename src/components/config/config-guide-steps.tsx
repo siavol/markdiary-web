@@ -12,13 +12,18 @@ import {
 import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import GithubRepoSelect from './github-repo'
 import {
+  Config,
   ConfigStatus,
   GitHubRepoConfig,
   hasConfigured,
-  loadConfig,
+  saveGitHubAuthor,
   saveGitHubRepo,
 } from '../../services/config-storage'
 import { getRepos, GitHubRepo } from '../../services/github'
+
+type NeedsConfig = {
+  config: Config
+}
 
 type OnContinueProps = {
   onContinue: () => void
@@ -192,11 +197,9 @@ export const AuthGithubTokenStep: React.FunctionComponent<
   )
 }
 
-export const SelectRepoStep: React.FunctionComponent<OnContinueProps> = ({
-  onContinue,
-}) => {
-  const config = loadConfig()
-
+export const SelectRepoStep: React.FunctionComponent<
+  NeedsConfig & OnContinueProps
+> = ({ config, onContinue }) => {
   const { t } = useTranslation(['config', 'guide'])
   const [repos, setRepos] = useState<GitHubRepo[]>([])
   const [value, setValue] = useState<GitHubRepoConfig>(config.github)
@@ -237,6 +240,72 @@ export const SelectRepoStep: React.FunctionComponent<OnContinueProps> = ({
             disabled={!value.owner || !value.repo}
           >
             Continue
+          </Button>
+        </Box>
+      </StepContent>
+    </>
+  )
+}
+
+export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
+  onContinue,
+}) => {
+  const { t } = useTranslation(['config', 'guide'])
+  const [name, setName] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+
+  const handleContinue = (): void => {
+    saveGitHubAuthor({
+      author: name,
+      email: email,
+    })
+    onContinue()
+  }
+
+  return (
+    <>
+      <StepLabel>Configure Author for GitHub Commits</StepLabel>
+      <StepContent>
+        <Typography>
+          Specify the author name and email that will be associated with your
+          GitHub commits. These details will appear in the commit history of
+          your repository for each journal entry.
+        </Typography>
+
+        {/* Name Input */}
+        <Box mt={2}>
+          <TextField
+            fullWidth
+            label="Name"
+            variant="outlined"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </Box>
+
+        {/* Email Input */}
+        <Box mt={2}>
+          <TextField
+            fullWidth
+            label="Email"
+            type="email"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </Box>
+
+        {/* Continue Button */}
+        <Box mt={2}>
+          <Button
+            variant="contained"
+            sx={{ mt: 1, mr: 1 }}
+            onClick={handleContinue}
+            disabled={!name || !email}
+          >
+            {t('Continue')}
           </Button>
         </Box>
       </StepContent>

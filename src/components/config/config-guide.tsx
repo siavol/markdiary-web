@@ -1,10 +1,14 @@
 import React from 'react'
-import { Container, Step, StepLabel, Stepper } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { ConfigStatus, getConfigStatus } from '../../services/config-storage'
+import { Container, Step, Stepper } from '@mui/material'
+import {
+  ConfigStatus,
+  getConfigStatus,
+  loadConfig,
+} from '../../services/config-storage'
 import {
   AuthGithubAppStep,
   AuthGithubTokenStep,
+  ConfigureAuthorStep,
   CreateRepoStep,
   SelectRepoStep,
 } from './config-guide-steps'
@@ -44,7 +48,6 @@ const ConfigGuide: React.FunctionComponent = () => {
     }
   }
 
-  const { t } = useTranslation(['config', 'guide'])
   const [activeStep, setActiveStep] = React.useState(
     getStepNo(GetStepForConfigStatus())
   )
@@ -54,6 +57,8 @@ const ConfigGuide: React.FunctionComponent = () => {
       setActiveStep(getStepNo(step))
     }
   }
+
+  const config = loadConfig()
 
   return (
     <Container>
@@ -71,10 +76,13 @@ const ConfigGuide: React.FunctionComponent = () => {
           />
         </Step>
         <Step key="select-repo">
-          <SelectRepoStep onContinue={gotoStep('configure-author')} />
+          <SelectRepoStep
+            config={config}
+            onContinue={gotoStep('configure-author')}
+          />
         </Step>
         <Step key="configure-author">
-          <StepLabel>{t('Setup your name')}</StepLabel>
+          <ConfigureAuthorStep onContinue={gotoStep('configure-author')} />
         </Step>
       </Stepper>
     </Container>

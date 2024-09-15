@@ -2,10 +2,7 @@ export type Config = {
   github: GitHubRepoConfig & {
     auth: GitHubAuthConfig
   }
-  committer: {
-    author: string | null
-    email: string | null
-  }
+  committer: GitHubAuthorConfig
 }
 
 export type GitHubRepoConfig = {
@@ -25,6 +22,11 @@ type GitHubAppAuthConfig = {
   refreshTokenExpiresIn: Date | null
 }
 export type GitHubAuthConfig = GitHubTokenAuthConfig | GitHubAppAuthConfig
+
+export type GitHubAuthorConfig = {
+  author: string | null
+  email: string | null
+}
 
 export enum ConfigStatus {
   None = 0,
@@ -91,6 +93,15 @@ export function saveGitHubRepo(config: GitHubRepoConfig): void {
   localStorage.setItem(GithubRepoStorageItem, config.repo)
 }
 
+export function saveGitHubAuthor(config: GitHubAuthorConfig): void {
+  if (!config.author || !config.email) {
+    throw new Error('Incomplete author config can not be saved.')
+  }
+
+  localStorage.setItem(GithubAuthorStorageItem, config.author)
+  localStorage.setItem(GithubEmailStorageItem, config.email)
+}
+
 export function saveConfig(config: Config): void {
   if (
     !config.github.owner ||
@@ -104,9 +115,7 @@ export function saveConfig(config: Config): void {
 
   saveGitHubRepo(config.github)
   saveGitHubToken(config.github.auth)
-
-  localStorage.setItem(GithubAuthorStorageItem, config.committer.author)
-  localStorage.setItem(GithubEmailStorageItem, config.committer.email)
+  saveGitHubAuthor(config.committer)
 }
 
 function loadAuthConfig(): GitHubAuthConfig {
