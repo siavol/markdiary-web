@@ -36,6 +36,11 @@ export type GitHubRepo = {
   fullName: string
 }
 
+export type GitHubUser = {
+  name: string | null
+  email: string | null
+}
+
 function dateParts(date: Date): DateParts {
   const fullYear = date.getFullYear().toString()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -289,4 +294,18 @@ export async function getRepos(config: Config): Promise<GitHubRepo[]> {
     name: r.name,
     fullName: r.full_name,
   }))
+}
+
+export async function getUser(config: Config): Promise<GitHubUser> {
+  const token = await getAuthToken(config)
+  const octokit = new Octokit({
+    auth: token,
+  })
+  const response = await octokit.rest.users.getAuthenticated()
+
+  const data = response.data
+  return {
+    name: data.name,
+    email: data.email,
+  }
 }

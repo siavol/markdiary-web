@@ -23,6 +23,7 @@ import ErrorBoundary from './components/error-boundary'
 import './i18n'
 import RecordsList from './components/record/records-list'
 import Start from './components/start'
+import ConfigGuide from './components/config/config-guide'
 
 const router = createBrowserRouter(
   [
@@ -54,6 +55,10 @@ const router = createBrowserRouter(
           path: 'config',
           element: <ConfigGithub />,
           loader: configGithubLoader,
+        },
+        {
+          path: 'config-guide',
+          element: <ConfigGuide />,
         },
         {
           path: 'config/github/callback',

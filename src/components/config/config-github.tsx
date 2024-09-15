@@ -2,7 +2,6 @@ import React, { ChangeEvent, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 import { useTranslation } from 'react-i18next'
 import {
-  Autocomplete,
   Box,
   Button,
   Container,
@@ -10,12 +9,12 @@ import {
   FormHelperText,
   Input,
   InputLabel,
-  Link,
-  TextField,
   Typography,
 } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
 import { ConfigGithubData } from './config-actions'
+import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
+import GithubRepoSelect, { RepoValue } from './github-repo'
 
 const ConfigGithub: React.FunctionComponent = () => {
   const { repos } = useLoaderData() as ConfigGithubData
@@ -48,14 +47,13 @@ const ConfigGithub: React.FunctionComponent = () => {
     }))
   }
 
-  const handleRepoNameChange = (value: string | null): void => {
-    const [owner, repo] = (value || '').split('/', 2)
+  const handleRepoNameChange = (value: RepoValue): void => {
     setConfig((prevConfig) => ({
       ...prevConfig,
       github: {
         ...prevConfig.github,
-        owner,
-        repo,
+        owner: value.owner,
+        repo: value.repo,
       },
     }))
   }
@@ -63,11 +61,6 @@ const ConfigGithub: React.FunctionComponent = () => {
   const handleSave = (): void => {
     saveConfig(config)
   }
-
-  const appName = process.env.REACT_APP_GITHUB_APP_NAME
-  const clientId = process.env.REACT_APP_GITHUB_APP_CLIENT_ID
-  const gitHubAppInstallUrl = `https://github.com/apps/${appName}/installations/new/`
-  const gitHubAppLoginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}`
 
   return (
     <Container>
@@ -79,15 +72,11 @@ const ConfigGithub: React.FunctionComponent = () => {
 
       <Typography variant="h5">{t('With GitHub App')}</Typography>
       <Box>
-        <Link href={gitHubAppInstallUrl}>
-          {t('Install Markdairy GitHub App')}
-        </Link>
+        <InstallGitHubApp />
         <Typography variant="body1" display="inline">
           {t(' or ')}
         </Typography>
-        <Link href={gitHubAppLoginUrl}>
-          {t('Login to Markdairy GitHub App')}
-        </Link>
+        <LoginToGitHubApp />
       </Box>
 
       <Typography variant="h5">{t('OR with GitHub Token')}</Typography>
@@ -107,22 +96,10 @@ const ConfigGithub: React.FunctionComponent = () => {
       </FormControl>
 
       <Typography variant="h4">{t('2. Select repository')}</Typography>
-      <Autocomplete
-        id="repo-name-input"
-        aria-describedby="repo-name-helper-input"
-        value={
-          config.github.owner && config.github.repo
-            ? `${config.github.owner}/${config.github.repo}`
-            : ''
-        }
-        onChange={(_event, newInputValue) => {
-          handleRepoNameChange(newInputValue)
-        }}
-        disablePortal
-        options={repos.map((r) => r.fullName)}
-        renderInput={(params) => (
-          <TextField {...params} variant="standard" label="Dairy repository" />
-        )}
+      <GithubRepoSelect
+        repos={repos}
+        value={config.github}
+        onChange={handleRepoNameChange}
       />
 
       <Typography variant="h4">{t('3. Name yourself for git')}</Typography>

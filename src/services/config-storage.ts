@@ -1,13 +1,13 @@
 export type Config = {
-  github: {
-    owner: string | null
-    repo: string | null
+  github: GitHubRepoConfig & {
     auth: GitHubAuthConfig
   }
-  committer: {
-    author: string | null
-    email: string | null
-  }
+  committer: GitHubAuthorConfig
+}
+
+export type GitHubRepoConfig = {
+  owner: string | null
+  repo: string | null
 }
 
 type GitHubTokenAuthConfig = {
@@ -22,6 +22,19 @@ type GitHubAppAuthConfig = {
   refreshTokenExpiresIn: Date | null
 }
 export type GitHubAuthConfig = GitHubTokenAuthConfig | GitHubAppAuthConfig
+
+export type GitHubAuthorConfig = {
+  author: string | null
+  email: string | null
+}
+
+export enum ConfigStatus {
+  None = 0,
+  Auth = 1,
+  Repo = 2,
+  Author = 4,
+  Full = Auth | Repo | Author,
+}
 
 const GithubOwnerStorageItem = 'markdiary.github.owner'
 const GithubRepoStorageItem = 'markdiary.github.repo'
@@ -71,6 +84,24 @@ export function saveGitHubToken(authConfig: GitHubAuthConfig): void {
   }
 }
 
+export function saveGitHubRepo(config: GitHubRepoConfig): void {
+  if (!config.owner || !config.repo) {
+    throw new Error('Incomplete repo config can not be saved.')
+  }
+
+  localStorage.setItem(GithubOwnerStorageItem, config.owner)
+  localStorage.setItem(GithubRepoStorageItem, config.repo)
+}
+
+export function saveGitHubAuthor(config: GitHubAuthorConfig): void {
+  if (!config.author || !config.email) {
+    throw new Error('Incomplete author config can not be saved.')
+  }
+
+  localStorage.setItem(GithubAuthorStorageItem, config.author)
+  localStorage.setItem(GithubEmailStorageItem, config.email)
+}
+
 export function saveConfig(config: Config): void {
   if (
     !config.github.owner ||
@@ -82,13 +113,9 @@ export function saveConfig(config: Config): void {
     throw new Error('Incomplete config can not be saved.')
   }
 
-  localStorage.setItem(GithubOwnerStorageItem, config.github.owner)
-  localStorage.setItem(GithubRepoStorageItem, config.github.repo)
-
+  saveGitHubRepo(config.github)
   saveGitHubToken(config.github.auth)
-
-  localStorage.setItem(GithubAuthorStorageItem, config.committer.author)
-  localStorage.setItem(GithubEmailStorageItem, config.committer.email)
+  saveGitHubAuthor(config.committer)
 }
 
 function loadAuthConfig(): GitHubAuthConfig {
@@ -136,7 +163,38 @@ export function loadConfig(): Config {
   }
 }
 
-export function hasRequiredConfiguration(): boolean {
-  const requiredItems = [GithubAuthTokenStorageItem]
-  return requiredItems.every((item) => localStorage.getItem(item))
+export function getConfigStatus(): ConfigStatus {
+  let result = ConfigStatus.None
+
+  if (localStorage.getItem(GithubAuthTokenStorageItem)) {
+    result = result | ConfigStatus.Auth
+  }
+
+  if (
+    localStorage.getItem(GithubOwnerStorageItem) &&
+    localStorage.getItem(GithubRepoStorageItem)
+  ) {
+    result = result | ConfigStatus.Repo
+  }
+
+  if (
+    localStorage.getItem(GithubAuthorStorageItem) &&
+    localStorage.getItem(GithubEmailStorageItem)
+  ) {
+    result = result | ConfigStatus.Author
+  }
+
+  return result
+}
+
+export function isStatusHasConfigured(
+  current: ConfigStatus,
+  required: ConfigStatus
+): boolean {
+  return (current & required) == required
+}
+
+export function hasConfigured(required: ConfigStatus): boolean {
+  const status = getConfigStatus()
+  return isStatusHasConfigured(status, required)
 }
