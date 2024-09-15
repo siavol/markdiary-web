@@ -89,7 +89,7 @@ const ConfigGuide: React.FunctionComponent = () => {
           />
         </Step>
         <Step key="configure-author">
-          <ConfigureAuthorStep onContinue={gotoStep('configure-author')} />
+          <ConfigureAuthorStep onContinue={gotoStep('app-configured')} />
         </Step>
         <Step key="app-configured">
           <AppConfiguredStep />

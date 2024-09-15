@@ -129,7 +129,7 @@ export const AuthGithubTokenStep: React.FunctionComponent<
   return (
     <>
       <StepLabel>
-        {t('Manually Create and Set an Authentication Token')}
+        {t('Manually Set an Authentication Token (Alternative)')}
       </StepLabel>
       <StepContent>
         <Typography>
