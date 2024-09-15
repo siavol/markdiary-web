@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
 import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import GithubRepoSelect from './github-repo'
 import {
@@ -306,6 +307,38 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
             disabled={!name || !email}
           >
             {t('Continue')}
+          </Button>
+        </Box>
+      </StepContent>
+    </>
+  )
+}
+
+export const AppConfiguredStep: React.FunctionComponent = () => {
+  const { t } = useTranslation(['config', 'guide'])
+
+  return (
+    <>
+      <StepLabel>{t('Setup Complete!')}</StepLabel>
+      <StepContent>
+        <Typography variant="h6" gutterBottom>
+          Congratulations!
+        </Typography>
+        <Typography>
+          You{apos}ve successfully completed the setup process. The journaling
+          app is now ready to go. Start journaling right away by writing your
+          first entry and storing your thoughts securely.
+        </Typography>
+
+        {/* Button to create the first journal entry */}
+        <Box mt={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            to="/new"
+            component={RouterLink}
+          >
+            Create First Record
           </Button>
         </Box>
       </StepContent>

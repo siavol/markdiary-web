@@ -3,9 +3,11 @@ import { Container, Step, Stepper } from '@mui/material'
 import {
   ConfigStatus,
   getConfigStatus,
+  isStatusHasConfigured,
   loadConfig,
 } from '../../services/config-storage'
 import {
+  AppConfiguredStep,
   AuthGithubAppStep,
   AuthGithubTokenStep,
   ConfigureAuthorStep,
@@ -19,15 +21,18 @@ type ConfigSteps =
   | 'manual-auth-token'
   | 'select-repo'
   | 'configure-author'
+  | 'app-configured'
 
 function GetStepForConfigStatus(): ConfigSteps {
   const status = getConfigStatus()
 
-  if (!(status & ConfigStatus.Auth)) return 'create-repo'
-  if (!(status & ConfigStatus.Repo)) return 'select-repo'
-  if (!(status & ConfigStatus.Author)) return 'configure-author'
+  if (!isStatusHasConfigured(status, ConfigStatus.Auth)) return 'create-repo'
+  if (!isStatusHasConfigured(status, ConfigStatus.Repo)) return 'select-repo'
+  if (!isStatusHasConfigured(status, ConfigStatus.Author))
+    return 'configure-author'
+  if (isStatusHasConfigured(status, ConfigStatus.Full)) return 'app-configured'
 
-  return 'select-repo'
+  return 'create-repo'
 }
 
 const ConfigGuide: React.FunctionComponent = () => {
@@ -43,6 +48,8 @@ const ConfigGuide: React.FunctionComponent = () => {
         return 3
       case 'configure-author':
         return 4
+      case 'app-configured':
+        return 5
       default:
         return 0
     }
@@ -83,6 +90,9 @@ const ConfigGuide: React.FunctionComponent = () => {
         </Step>
         <Step key="configure-author">
           <ConfigureAuthorStep onContinue={gotoStep('configure-author')} />
+        </Step>
+        <Step key="app-configured">
+          <AppConfiguredStep />
         </Step>
       </Stepper>
     </Container>
