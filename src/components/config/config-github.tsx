@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, ReactNode, useState } from 'react'
 import { Config, loadConfig, saveConfig } from '../../services/config-storage'
 import { useTranslation } from 'react-i18next'
 import {
@@ -30,6 +30,32 @@ import {
 import { ConfigGithubData } from './config-actions'
 import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import GithubRepoSelect, { RepoValue } from './github-repo'
+
+type ConfigSectionLinkProps = {
+  path: string
+  name: string
+  icon: ReactNode
+}
+const ConfigSectionLink: React.FunctionComponent<ConfigSectionLinkProps> = ({
+  path,
+  name,
+  icon,
+}) => {
+  const location = useLocation()
+
+  return (
+    <ListItem key={path} disablePadding>
+      <ListItemButton
+        to={`./${path}`}
+        component={RouterLink}
+        selected={location.pathname.endsWith(`/${path}`)}
+      >
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText>{name}</ListItemText>
+      </ListItemButton>
+    </ListItem>
+  )
+}
 
 const ConfigGithub: React.FunctionComponent = () => {
   const { repos } = useLoaderData() as ConfigGithubData
@@ -100,42 +126,21 @@ const ConfigGithub: React.FunctionComponent = () => {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            <ListItem key="auth" disablePadding>
-              <ListItemButton
-                to="./auth"
-                component={RouterLink}
-                selected={isLocation('auth')}
-              >
-                <ListItemIcon>
-                  <PasswordIcon />
-                </ListItemIcon>
-                <ListItemText>{t('Authentication')}</ListItemText>
-              </ListItemButton>
-            </ListItem>
-            <ListItem key="repo" disablePadding>
-              <ListItemButton
-                to="./repo"
-                component={RouterLink}
-                selected={isLocation('repo')}
-              >
-                <ListItemIcon>
-                  <GitHubIcon />
-                </ListItemIcon>
-                <ListItemText>{t('Repository')}</ListItemText>
-              </ListItemButton>
-            </ListItem>
-            <ListItem key="author" disablePadding>
-              <ListItemButton
-                to="./author"
-                component={RouterLink}
-                selected={isLocation('author')}
-              >
-                <ListItemIcon>
-                  <PersonIcon />
-                </ListItemIcon>
-                <ListItemText>{t('Author')}</ListItemText>
-              </ListItemButton>
-            </ListItem>
+            <ConfigSectionLink
+              path="auth"
+              name={t('Authentication')}
+              icon={<PasswordIcon />}
+            />
+            <ConfigSectionLink
+              path="repo"
+              name={t('Repository')}
+              icon={<GitHubIcon />}
+            />
+            <ConfigSectionLink
+              path="author"
+              name={t('Author')}
+              icon={<PersonIcon />}
+            />
           </List>
         </Box>
       </Drawer>
