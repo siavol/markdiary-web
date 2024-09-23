@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Layout from './components/layout'
 import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
@@ -55,6 +55,24 @@ const router = createBrowserRouter(
           path: 'config',
           element: <ConfigGithub />,
           loader: configGithubLoader,
+          children: [
+            {
+              index: true,
+              element: <Navigate to="auth" replace />,
+            },
+            {
+              path: 'auth',
+              element: <div>TBD: Authentication</div>,
+            },
+            {
+              path: 'repo',
+              element: <div>TBD: Repo</div>,
+            },
+            {
+              path: 'author',
+              element: <div>TBD: Author</div>,
+            },
+          ],
         },
         {
           path: 'config-guide',

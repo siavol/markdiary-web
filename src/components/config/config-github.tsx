@@ -21,7 +21,7 @@ import {
 import PasswordIcon from '@mui/icons-material/Password'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import PersonIcon from '@mui/icons-material/Person'
-import { useLoaderData } from 'react-router-dom'
+import { Outlet, useLoaderData, Link as RouterLink } from 'react-router-dom'
 import { ConfigGithubData } from './config-actions'
 import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import GithubRepoSelect, { RepoValue } from './github-repo'
@@ -91,7 +91,7 @@ const ConfigGithub: React.FunctionComponent = () => {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             <ListItem key="auth" disablePadding>
-              <ListItemButton>
+              <ListItemButton to="./auth" component={RouterLink}>
                 <ListItemIcon>
                   <PasswordIcon />
                 </ListItemIcon>
@@ -99,7 +99,7 @@ const ConfigGithub: React.FunctionComponent = () => {
               </ListItemButton>
             </ListItem>
             <ListItem key="repo" disablePadding>
-              <ListItemButton>
+              <ListItemButton to="./repo" component={RouterLink}>
                 <ListItemIcon>
                   <GitHubIcon />
                 </ListItemIcon>
@@ -107,7 +107,7 @@ const ConfigGithub: React.FunctionComponent = () => {
               </ListItemButton>
             </ListItem>
             <ListItem key="author" disablePadding>
-              <ListItemButton>
+              <ListItemButton to="./author" component={RouterLink}>
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
@@ -117,14 +117,17 @@ const ConfigGithub: React.FunctionComponent = () => {
           </List>
         </Box>
       </Drawer>
-      <Container>
-        <Typography variant="h3">
+      <Box sx={{ flexGrow: 1, p: 3, paddingLeft: `${drawerWidth}px` }}>
+        <Toolbar />
+        <Outlet></Outlet>
+
+        {/* <Typography variant="h3">
           {t('Configure Dairy GitHub Connection.')}
-        </Typography>
+        </Typography> */}
 
-        <Typography variant="h4">{t('1. Connect to GitHub')}</Typography>
+        {/* <Typography variant="h4">{t('1. Connect to GitHub')}</Typography> */}
 
-        <Typography variant="h5">{t('With GitHub App')}</Typography>
+        {/* <Typography variant="h5">{t('With GitHub App')}</Typography>
         <Box>
           <InstallGitHubApp />
           <Typography variant="body1" display="inline">
@@ -189,8 +192,8 @@ const ConfigGithub: React.FunctionComponent = () => {
           </FormControl>
         </Box>
 
-        <Button onClick={handleSave}>{t('Save', { ns: 'general' })}</Button>
-      </Container>
+        <Button onClick={handleSave}>{t('Save', { ns: 'general' })}</Button> */}
+      </Box>
     </>
   )
 }

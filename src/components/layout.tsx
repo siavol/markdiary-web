@@ -10,6 +10,7 @@ import {
   Toolbar,
   IconButton,
   LinearProgress,
+  CssBaseline,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { ConfigStatus, hasConfigured } from '../services/config-storage'
@@ -41,7 +42,11 @@ const Layout: React.FunctionComponent = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
           <Typography
             to="/"
