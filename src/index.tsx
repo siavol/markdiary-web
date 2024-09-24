@@ -24,6 +24,7 @@ import './i18n'
 import RecordsList from './components/record/records-list'
 import Start from './components/start'
 import ConfigGuide from './components/config/config-guide'
+import { ConfigGitHubAuth } from './components/config/github-auth'
 
 const router = createBrowserRouter(
   [
@@ -62,7 +63,7 @@ const router = createBrowserRouter(
             },
             {
               path: 'auth',
-              element: <div>TBD: Authentication</div>,
+              element: <ConfigGitHubAuth />,
             },
             {
               path: 'repo',

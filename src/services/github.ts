@@ -41,6 +41,10 @@ export type GitHubUser = {
   email: string | null
 }
 
+export type GitHubAppInstallation = {
+  appSlug: string
+}
+
 function dateParts(date: Date): DateParts {
   const fullYear = date.getFullYear().toString()
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -308,4 +312,18 @@ export async function getUser(config: Config): Promise<GitHubUser> {
     name: data.name,
     email: data.email,
   }
+}
+
+export async function getAppInstallations(
+  config: Config
+): Promise<GitHubAppInstallation[]> {
+  const token = await getAuthToken(config)
+  const octokit = new Octokit({
+    auth: token,
+  })
+  const response =
+    await octokit.rest.apps.listInstallationsForAuthenticatedUser()
+  return response.data.installations.map((i) => ({
+    appSlug: i.app_slug,
+  }))
 }
