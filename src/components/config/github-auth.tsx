@@ -1,10 +1,17 @@
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAppInstallation } from '../../hooks/useAppInstallation'
+import {
+  AppInstallationResult,
+  useAppInstallation,
+} from '../../hooks/useAppInstallation'
 
 type Disableable = {
   disabled?: boolean
+}
+
+type AppInstallationProps = {
+  installationResult: AppInstallationResult
 }
 
 export const InstallGitHubApp: React.FunctionComponent<Disableable> = ({
@@ -48,17 +55,39 @@ export const LoginToGitHubApp: React.FunctionComponent<Disableable> = ({
   )
 }
 
+const GitHubAppInstallationStatus: React.FunctionComponent<
+  AppInstallationProps
+> = ({ installationResult }) => {
+  const { t } = useTranslation(['config', 'general'])
+
+  if (installationResult.loading) {
+    return <CircularProgress />
+  }
+  if (installationResult.error) {
+    return (
+      <Alert severity="warning">
+        {t('Failed to check installation status.')}
+      </Alert>
+    )
+  }
+  if (installationResult.appInstalled) {
+    return (
+      <Alert severity="success">{t('You have application installed')}</Alert>
+    )
+  } else {
+    return null
+  }
+}
+
 export const ConfigGitHubAuth: React.FunctionComponent = () => {
   // const { t } = useTranslation(['config', 'general'])
-  const { appInstalled } = useAppInstallation()
+  const installationResult = useAppInstallation()
 
   return (
     <Box>
       <Stack direction={'row'}>
-        <InstallGitHubApp disabled={!!appInstalled} />
-        <Typography alignContent={'center'}>
-          You have application installed
-        </Typography>
+        <InstallGitHubApp disabled={!!installationResult.appInstalled} />
+        <GitHubAppInstallationStatus installationResult={installationResult} />
       </Stack>
       <Box mt={2}>
         <LoginToGitHubApp />
