@@ -28,8 +28,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { ConfigGithubData } from './config-actions'
-import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
-import GithubRepoSelect, { RepoValue } from './github-repo'
+import { RepoValue } from './github-repo'
 
 type ConfigSectionLinkProps = {
   path: string

@@ -1,6 +1,13 @@
 import { Autocomplete, TextField } from '@mui/material'
-import React from 'react'
-import { GitHubRepo } from '../../services/github'
+import React, { useEffect, useState } from 'react'
+import { getRepos, GitHubRepo } from '../../services/github'
+import {
+  ConfigStatus,
+  GitHubRepoConfig,
+  hasConfigured,
+  loadConfig,
+  saveGitHubRepo,
+} from '../../services/config-storage'
 
 export type RepoValue = {
   owner: string | null
@@ -13,11 +20,9 @@ type GithubRepoSelectProps = {
   onChange: (value: RepoValue) => void
 }
 
-const GithubRepoSelect: React.FunctionComponent<GithubRepoSelectProps> = ({
-  repos,
-  value,
-  onChange,
-}) => {
+export const GithubRepoSelect: React.FunctionComponent<
+  GithubRepoSelectProps
+> = ({ repos, value, onChange }) => {
   const handleChange = (fullName: string | null): void => {
     if (fullName) {
       const [owner, repo] = (fullName || '').split('/', 2)
@@ -47,4 +52,23 @@ const GithubRepoSelect: React.FunctionComponent<GithubRepoSelectProps> = ({
   )
 }
 
-export default GithubRepoSelect
+export const ConfigGitHubRepo: React.FunctionComponent = () => {
+  const config = loadConfig()
+  const [repos, setRepos] = useState<GitHubRepo[]>([])
+  const [value, setValue] = useState<GitHubRepoConfig>(config.github)
+
+  useEffect(() => {
+    if (hasConfigured(ConfigStatus.Auth)) {
+      getRepos(config).then((data) => setRepos(data))
+    }
+  }, [config])
+
+  const saveRepoConfig = (newValue: RepoValue): void => {
+    saveGitHubRepo(newValue)
+    setValue(newValue)
+  }
+
+  return (
+    <GithubRepoSelect repos={repos} value={value} onChange={saveRepoConfig} />
+  )
+}

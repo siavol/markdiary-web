@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import { GitHubToken, InstallGitHubApp, LoginToGitHubApp } from './github-auth'
-import GithubRepoSelect from './github-repo'
+import { GithubRepoSelect } from './github-repo'
 import {
   Config,
   ConfigStatus,
