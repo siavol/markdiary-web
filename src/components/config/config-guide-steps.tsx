@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
+import { GitHubToken, InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import GithubRepoSelect from './github-repo'
 import {
   Config,
@@ -140,32 +140,7 @@ export const AuthGithubTokenStep: React.FunctionComponent<
           repository permissions and set it to <strong>write access</strong>.
         </Typography>
 
-        {/* Link to GitHub Token Creation */}
-        <Box mt={2}>
-          <Typography>
-            You can create a token by visiting the{' '}
-            <Link
-              href="https://github.com/settings/tokens?type=beta"
-              target="_blank"
-              rel="noopener"
-            >
-              GitHub Token Creation Page
-            </Link>
-            . Make sure to copy the token and paste it below once it{apos}s
-            created.
-          </Typography>
-        </Box>
-
-        {/* Token Input */}
-        <Box mt={2}>
-          <TextField
-            label={t('Enter Personal Access Token')}
-            variant="outlined"
-            type="password"
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-        </Box>
+        <GitHubToken />
 
         {/* Continue Button */}
         <Box>
