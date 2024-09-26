@@ -14,13 +14,11 @@ import { GitHubToken, InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import { GithubRepoSelect } from './github-repo'
 import {
   Config,
-  ConfigStatus,
   GitHubRepoConfig,
-  hasConfigured,
   saveGitHubAuthor,
   saveGitHubRepo,
 } from '../../services/config-storage'
-import { getRepos, GitHubRepo } from '../../services/github'
+import useUserRepositories from '../../hooks/useUserRepositories'
 
 type NeedsConfig = {
   config: Config
@@ -177,14 +175,8 @@ export const SelectRepoStep: React.FunctionComponent<
   NeedsConfig & OnContinueProps
 > = ({ config, onContinue }) => {
   const { t } = useTranslation(['config', 'guide'])
-  const [repos, setRepos] = useState<GitHubRepo[]>([])
+  const { repos } = useUserRepositories()
   const [value, setValue] = useState<GitHubRepoConfig>(config.github)
-
-  useEffect(() => {
-    if (hasConfigured(ConfigStatus.Auth)) {
-      getRepos(config).then((data) => setRepos(data))
-    }
-  }, [config])
 
   const saveRepoAndContinue = (): void => {
     saveGitHubRepo(value)
@@ -204,7 +196,11 @@ export const SelectRepoStep: React.FunctionComponent<
 
         {/* Repository Select Input */}
         <Box mt={2}>
-          <GithubRepoSelect value={value} repos={repos} onChange={setValue} />
+          <GithubRepoSelect
+            value={value}
+            repos={repos ?? []}
+            onChange={setValue}
+          />
         </Box>
 
         {/* Continue Button */}

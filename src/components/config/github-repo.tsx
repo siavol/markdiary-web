@@ -1,13 +1,18 @@
-import { Autocomplete, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { getRepos, GitHubRepo } from '../../services/github'
 import {
-  ConfigStatus,
+  Alert,
+  Autocomplete,
+  Box,
+  CircularProgress,
+  TextField,
+} from '@mui/material'
+import React, { useState } from 'react'
+import { GitHubRepo } from '../../services/github'
+import {
   GitHubRepoConfig,
-  hasConfigured,
   loadConfig,
   saveGitHubRepo,
 } from '../../services/config-storage'
+import useUserRepositories from '../../hooks/useUserRepositories'
 
 export type RepoValue = {
   owner: string | null
@@ -54,14 +59,8 @@ export const GithubRepoSelect: React.FunctionComponent<
 
 export const ConfigGitHubRepo: React.FunctionComponent = () => {
   const config = loadConfig()
-  const [repos, setRepos] = useState<GitHubRepo[]>([])
+  const { repos, loading, error } = useUserRepositories()
   const [value, setValue] = useState<GitHubRepoConfig>(config.github)
-
-  useEffect(() => {
-    if (hasConfigured(ConfigStatus.Auth)) {
-      getRepos(config).then((data) => setRepos(data))
-    }
-  }, [config])
 
   const saveRepoConfig = (newValue: RepoValue): void => {
     saveGitHubRepo(newValue)
@@ -69,6 +68,19 @@ export const ConfigGitHubRepo: React.FunctionComponent = () => {
   }
 
   return (
-    <GithubRepoSelect repos={repos} value={value} onChange={saveRepoConfig} />
+    <Box>
+      {!!error && (
+        <Alert severity="error">Failed to load repositories list</Alert>
+      )}
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <GithubRepoSelect
+          repos={repos || []}
+          value={value}
+          onChange={saveRepoConfig}
+        />
+      )}
+    </Box>
   )
 }
