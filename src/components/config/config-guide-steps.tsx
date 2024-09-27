@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Box,
@@ -119,11 +119,6 @@ export const AuthGithubTokenStep: React.FunctionComponent<
 > = ({ onContinue, onGoBack }) => {
   const { t } = useTranslation(['config', 'guide'])
 
-  const checkTokenAndContinue = (): void => {
-    // TODO: validate token here
-    onContinue()
-  }
-
   return (
     <>
       <StepLabel>
@@ -142,11 +137,7 @@ export const AuthGithubTokenStep: React.FunctionComponent<
 
         {/* Continue Button */}
         <Box>
-          <Button
-            variant="contained"
-            sx={{ mt: 1 }}
-            onClick={checkTokenAndContinue}
-          >
+          <Button variant="contained" sx={{ mt: 1 }} onClick={onContinue}>
             {t('Continue')}
           </Button>
         </Box>
@@ -248,7 +239,7 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
         <Box mt={2}>
           <TextField
             fullWidth
-            label="Name"
+            label="User name"
             variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -260,7 +251,7 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
         <Box mt={2}>
           <TextField
             fullWidth
-            label="Email"
+            label="User email"
             type="email"
             variant="outlined"
             value={email}
