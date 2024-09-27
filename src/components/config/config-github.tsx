@@ -13,7 +13,13 @@ import {
 import PasswordIcon from '@mui/icons-material/Password'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import PersonIcon from '@mui/icons-material/Person'
-import { Outlet, Link as RouterLink, useLocation } from 'react-router-dom'
+import {
+  Outlet,
+  Link as RouterLink,
+  useLocation,
+  useOutletContext,
+} from 'react-router-dom'
+import { LayoutContext } from '../layout'
 
 type ConfigSectionLinkProps = {
   path: string
@@ -43,44 +49,93 @@ const ConfigSectionLink: React.FunctionComponent<ConfigSectionLinkProps> = ({
 
 const ConfigGithub: React.FunctionComponent = () => {
   const { t } = useTranslation(['config', 'general'])
+  const { onMenuClick } = useOutletContext<LayoutContext>()
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [isClosing, setIsClosing] = React.useState(false)
+
+  const handleDrawerClose = (): void => {
+    setIsClosing(true)
+    setMobileOpen(false)
+  }
+
+  const handleDrawerTransitionEnd = (): void => {
+    setIsClosing(false)
+  }
+
+  const handleDrawerToggle = (): void => {
+    if (!isClosing) {
+      setMobileOpen(!mobileOpen)
+    }
+  }
+
+  onMenuClick(handleDrawerToggle)
 
   const drawerWidth = 240
 
+  const drawer = (
+    <>
+      <Toolbar />
+      <Box sx={{ overflow: 'auto' }}>
+        <List>
+          <ConfigSectionLink
+            path="auth"
+            name={t('Authentication')}
+            icon={<PasswordIcon />}
+          />
+          <ConfigSectionLink
+            path="repo"
+            name={t('Repository')}
+            icon={<GitHubIcon />}
+          />
+          <ConfigSectionLink
+            path="author"
+            name={t('Author')}
+            icon={<PersonIcon />}
+          />
+        </List>
+      </Box>
+    </>
+  )
+
   return (
     <>
+      <Drawer
+        // container={container}
+        variant="temporary"
+        open={mobileOpen}
+        onTransitionEnd={handleDrawerTransitionEnd}
+        onClose={handleDrawerClose}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          display: { xs: 'block', sm: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+      >
+        {drawer}
+      </Drawer>
       <Drawer
         variant="permanent"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
+          display: { xs: 'none', sm: 'block' },
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: 'border-box',
           },
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            <ConfigSectionLink
-              path="auth"
-              name={t('Authentication')}
-              icon={<PasswordIcon />}
-            />
-            <ConfigSectionLink
-              path="repo"
-              name={t('Repository')}
-              icon={<GitHubIcon />}
-            />
-            <ConfigSectionLink
-              path="author"
-              name={t('Author')}
-              icon={<PersonIcon />}
-            />
-          </List>
-        </Box>
+        {drawer}
       </Drawer>
-      <Box sx={{ flexGrow: 1, p: 3, paddingLeft: `${drawerWidth}px` }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: { xs: 0, sm: 3 },
+          pl: { xs: 0, sm: `${drawerWidth}px` },
+        }}
+      >
         <Toolbar />
         <Outlet></Outlet>
       </Box>

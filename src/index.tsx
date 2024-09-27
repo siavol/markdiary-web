@@ -58,6 +58,9 @@ const router = createBrowserRouter(
           path: 'config',
           element: <ConfigGithub />,
           loader: configGithubLoader,
+          handle: {
+            useMenuButton: true,
+          },
           children: [
             {
               index: true,
