@@ -26,6 +26,7 @@ import Start from './components/start'
 import ConfigGuide from './components/config/config-guide'
 import { ConfigGitHubAuth } from './components/config/github-auth'
 import { ConfigGitHubRepo } from './components/config/github-repo'
+import { ConfigGitHubAuthor } from './components/config/config.author'
 
 const router = createBrowserRouter(
   [
@@ -72,7 +73,7 @@ const router = createBrowserRouter(
             },
             {
               path: 'author',
-              element: <div>TBD: Author</div>,
+              element: <ConfigGitHubAuthor />,
             },
           ],
         },

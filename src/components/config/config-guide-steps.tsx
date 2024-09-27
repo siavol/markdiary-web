@@ -14,11 +14,13 @@ import { GitHubToken, InstallGitHubApp, LoginToGitHubApp } from './github-auth'
 import { GithubRepoSelect } from './github-repo'
 import {
   Config,
+  GitHubAuthorConfig,
   GitHubRepoConfig,
   saveGitHubAuthor,
   saveGitHubRepo,
 } from '../../services/config-storage'
 import useUserRepositories from '../../hooks/useUserRepositories'
+import { GitHubAuthor } from './config.author'
 
 type NeedsConfig = {
   config: Config
@@ -214,16 +216,7 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
   onContinue,
 }) => {
   const { t } = useTranslation(['config', 'guide'])
-  const [name, setName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-
-  const handleContinue = (): void => {
-    saveGitHubAuthor({
-      author: name,
-      email: email,
-    })
-    onContinue()
-  }
+  const [value, setValue] = useState<GitHubAuthorConfig>()
 
   return (
     <>
@@ -235,38 +228,15 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
           your repository for each journal entry.
         </Typography>
 
-        {/* Name Input */}
-        <Box mt={2}>
-          <TextField
-            fullWidth
-            label="User name"
-            variant="outlined"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </Box>
-
-        {/* Email Input */}
-        <Box mt={2}>
-          <TextField
-            fullWidth
-            label="User email"
-            type="email"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Box>
+        <GitHubAuthor onChange={setValue} />
 
         {/* Continue Button */}
         <Box mt={2}>
           <Button
             variant="contained"
             sx={{ mt: 1, mr: 1 }}
-            onClick={handleContinue}
-            disabled={!name || !email}
+            onClick={onContinue}
+            disabled={!value?.author || !value?.email}
           >
             {t('Continue')}
           </Button>
