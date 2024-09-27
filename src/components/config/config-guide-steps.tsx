@@ -6,7 +6,6 @@ import {
   Link,
   StepContent,
   StepLabel,
-  TextField,
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
@@ -16,7 +15,6 @@ import {
   Config,
   GitHubAuthorConfig,
   GitHubRepoConfig,
-  saveGitHubAuthor,
   saveGitHubRepo,
 } from '../../services/config-storage'
 import useUserRepositories from '../../hooks/useUserRepositories'
