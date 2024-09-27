@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Layout from './components/layout'
 import RecordNew from './components/record/record-new'
 import RecordView from './components/record/record-view'
@@ -24,6 +24,9 @@ import './i18n'
 import RecordsList from './components/record/records-list'
 import Start from './components/start'
 import ConfigGuide from './components/config/config-guide'
+import { ConfigGitHubAuth } from './components/config/github-auth'
+import { ConfigGitHubRepo } from './components/config/github-repo'
+import { ConfigGitHubAuthor } from './components/config/config.author'
 
 const router = createBrowserRouter(
   [
@@ -55,6 +58,27 @@ const router = createBrowserRouter(
           path: 'config',
           element: <ConfigGithub />,
           loader: configGithubLoader,
+          handle: {
+            useMenuButton: true,
+          },
+          children: [
+            {
+              index: true,
+              element: <Navigate to="auth" replace />,
+            },
+            {
+              path: 'auth',
+              element: <ConfigGitHubAuth />,
+            },
+            {
+              path: 'repo',
+              element: <ConfigGitHubRepo />,
+            },
+            {
+              path: 'author',
+              element: <ConfigGitHubAuthor />,
+            },
+          ],
         },
         {
           path: 'config-guide',

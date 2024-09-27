@@ -1,5 +1,10 @@
 import React from 'react'
-import { Link as RouterLink, Outlet, useNavigation } from 'react-router-dom'
+import {
+  Link as RouterLink,
+  Outlet,
+  useNavigation,
+  useMatches,
+} from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import {
@@ -10,19 +15,62 @@ import {
   Toolbar,
   IconButton,
   LinearProgress,
+  CssBaseline,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
+import MenuIcon from '@mui/icons-material/Menu'
 import { ConfigStatus, hasConfigured } from '../services/config-storage'
+
+type MenuClickHandler = () => void
+export interface LayoutContext {
+  onMenuClick(handler: MenuClickHandler): void
+}
+
+class LayoutContextImpl implements LayoutContext {
+  private handlers: MenuClickHandler[] = []
+
+  constructor() {
+    this.onMenuClick = this.onMenuClick.bind(this)
+    this.triggerMenuClick = this.triggerMenuClick.bind(this)
+  }
+
+  onMenuClick(handler: MenuClickHandler): void {
+    this.handlers.push(handler)
+  }
+
+  triggerMenuClick(): void {
+    for (const handler of this.handlers) {
+      handler()
+    }
+  }
+}
 
 const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
+  const matches = useMatches()
   const { t } = useTranslation(['layout', 'general'])
   const isConfigured = hasConfigured(ConfigStatus.Full)
+
+  const contex = new LayoutContextImpl()
+  const showMenuButton = matches.some(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (match) => (match.handle as any)?.useMenuButton
+  )
+  const menuButton = showMenuButton ? (
+    <IconButton
+      color="inherit"
+      edge="start"
+      onClick={contex.triggerMenuClick}
+      sx={{ mr: 2, display: { sm: 'none' } }}
+    >
+      <MenuIcon />
+    </IconButton>
+  ) : null
 
   const content =
     navigation.state === 'idle' ? (
       <Container maxWidth="md">
-        <Outlet />
+        <Outlet context={contex} />
       </Container>
     ) : (
       <LinearProgress />
@@ -41,8 +89,14 @@ const Layout: React.FunctionComponent = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
+          {menuButton}
+
           <Typography
             to="/"
             component={RouterLink}

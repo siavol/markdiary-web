@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Box,
@@ -6,21 +6,19 @@ import {
   Link,
   StepContent,
   StepLabel,
-  TextField,
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { InstallGitHubApp, LoginToGitHubApp } from './github-auth'
-import GithubRepoSelect from './github-repo'
+import { GitHubToken, InstallGitHubApp, LoginToGitHubApp } from './github-auth'
+import { GithubRepoSelect } from './github-repo'
 import {
   Config,
-  ConfigStatus,
+  GitHubAuthorConfig,
   GitHubRepoConfig,
-  hasConfigured,
-  saveGitHubAuthor,
   saveGitHubRepo,
 } from '../../services/config-storage'
-import { getRepos, GitHubRepo } from '../../services/github'
+import useUserRepositories from '../../hooks/useUserRepositories'
+import { GitHubAuthor } from './config.author'
 
 type NeedsConfig = {
   config: Config
@@ -121,11 +119,6 @@ export const AuthGithubTokenStep: React.FunctionComponent<
 > = ({ onContinue, onGoBack }) => {
   const { t } = useTranslation(['config', 'guide'])
 
-  const checkTokenAndContinue = (): void => {
-    // TODO: validate token here
-    onContinue()
-  }
-
   return (
     <>
       <StepLabel>
@@ -140,40 +133,11 @@ export const AuthGithubTokenStep: React.FunctionComponent<
           repository permissions and set it to <strong>write access</strong>.
         </Typography>
 
-        {/* Link to GitHub Token Creation */}
-        <Box mt={2}>
-          <Typography>
-            You can create a token by visiting the{' '}
-            <Link
-              href="https://github.com/settings/tokens?type=beta"
-              target="_blank"
-              rel="noopener"
-            >
-              GitHub Token Creation Page
-            </Link>
-            . Make sure to copy the token and paste it below once it{apos}s
-            created.
-          </Typography>
-        </Box>
-
-        {/* Token Input */}
-        <Box mt={2}>
-          <TextField
-            label={t('Enter Personal Access Token')}
-            variant="outlined"
-            type="password"
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-        </Box>
+        <GitHubToken />
 
         {/* Continue Button */}
         <Box>
-          <Button
-            variant="contained"
-            sx={{ mt: 1 }}
-            onClick={checkTokenAndContinue}
-          >
+          <Button variant="contained" sx={{ mt: 1 }} onClick={onContinue}>
             {t('Continue')}
           </Button>
         </Box>
@@ -202,14 +166,8 @@ export const SelectRepoStep: React.FunctionComponent<
   NeedsConfig & OnContinueProps
 > = ({ config, onContinue }) => {
   const { t } = useTranslation(['config', 'guide'])
-  const [repos, setRepos] = useState<GitHubRepo[]>([])
+  const { repos } = useUserRepositories()
   const [value, setValue] = useState<GitHubRepoConfig>(config.github)
-
-  useEffect(() => {
-    if (hasConfigured(ConfigStatus.Auth)) {
-      getRepos(config).then((data) => setRepos(data))
-    }
-  }, [config])
 
   const saveRepoAndContinue = (): void => {
     saveGitHubRepo(value)
@@ -229,7 +187,11 @@ export const SelectRepoStep: React.FunctionComponent<
 
         {/* Repository Select Input */}
         <Box mt={2}>
-          <GithubRepoSelect value={value} repos={repos} onChange={setValue} />
+          <GithubRepoSelect
+            value={value}
+            repos={repos ?? []}
+            onChange={setValue}
+          />
         </Box>
 
         {/* Continue Button */}
@@ -252,16 +214,7 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
   onContinue,
 }) => {
   const { t } = useTranslation(['config', 'guide'])
-  const [name, setName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-
-  const handleContinue = (): void => {
-    saveGitHubAuthor({
-      author: name,
-      email: email,
-    })
-    onContinue()
-  }
+  const [value, setValue] = useState<GitHubAuthorConfig>()
 
   return (
     <>
@@ -273,38 +226,15 @@ export const ConfigureAuthorStep: React.FunctionComponent<OnContinueProps> = ({
           your repository for each journal entry.
         </Typography>
 
-        {/* Name Input */}
-        <Box mt={2}>
-          <TextField
-            fullWidth
-            label="Name"
-            variant="outlined"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </Box>
-
-        {/* Email Input */}
-        <Box mt={2}>
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Box>
+        <GitHubAuthor onChange={setValue} />
 
         {/* Continue Button */}
         <Box mt={2}>
           <Button
             variant="contained"
             sx={{ mt: 1, mr: 1 }}
-            onClick={handleContinue}
-            disabled={!name || !email}
+            onClick={onContinue}
+            disabled={!value?.author || !value?.email}
           >
             {t('Continue')}
           </Button>
