@@ -93,7 +93,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/markdairy-web',
+    basename: '/markdiary-web',
   }
 )
 

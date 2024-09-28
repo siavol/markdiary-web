@@ -1,8 +1,8 @@
-# MarkDairy Web App
+# MarkDiary Web App
 
 The app allows you to write your diary and use your Github as storage for dairy records.
 
-https://siavol.github.io/markdairy-web/
+https://siavol.github.io/markdiary-web/
 
 ## Configuration
 
