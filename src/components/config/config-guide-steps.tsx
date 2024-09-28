@@ -80,12 +80,12 @@ export const AuthGithubAppStep: React.FunctionComponent<OnSkipProps> = ({
   return (
     <>
       <StepLabel>
-        {t('Authenticate via Markdairy GitHub App (Recommended)')}
+        {t('Authenticate via Markdiary GitHub App (Recommended)')}
       </StepLabel>
       <StepContent>
         <Typography>
           The recommended way to authenticate is by using the{space}
-          <strong>Markdairy GitHub App</strong>. This automates the token
+          <strong>Markdiary GitHub App</strong>. This automates the token
           management process, including creating, refreshing, and limiting
           repository access.
           <br />
@@ -146,7 +146,7 @@ export const AuthGithubTokenStep: React.FunctionComponent<
         <Box mt={2}>
           <Typography>
             Prefer an easier way? You can go back and{space}
-            <strong>install the Markdairy GitHub App</strong> instead.
+            <strong>install the Markdiary GitHub App</strong> instead.
           </Typography>
           <Button
             variant="outlined"

@@ -104,7 +104,7 @@ const Layout: React.FunctionComponent = () => {
             color="inherit"
             sx={{ flexGrow: 1, textDecoration: 'none' }}
           >
-            Markdairy
+            Markdiary
           </Typography>
 
           {newButton}

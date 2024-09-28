@@ -1,8 +1,8 @@
 {
-  "name": "markdairy-web",
+  "name": "markdiary-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://siavol.github.io/markdairy-web/",
+  "homepage": "https://siavol.github.io/markdiary-web/",
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
