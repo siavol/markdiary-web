@@ -132,6 +132,9 @@ const Layout: React.FunctionComponent = () => {
         </Toolbar>
       </AppBar>
 
+      {/* make a toolbar-size shift */}
+      <Toolbar />
+
       {content}
     </Box>
   )

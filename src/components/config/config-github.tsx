@@ -77,7 +77,6 @@ const ConfigGithub: React.FunctionComponent = () => {
           pl: { xs: 0, sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar />
         <Outlet></Outlet>
       </Box>
     </>
