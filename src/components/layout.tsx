@@ -20,6 +20,7 @@ import {
 import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
 import { ConfigStatus, hasConfigured } from '../services/config-storage'
+import SourceCodeLink from './source-code-link'
 
 type MenuClickHandler = () => void
 export interface LayoutContext {
@@ -126,8 +127,13 @@ const Layout: React.FunctionComponent = () => {
           >
             <SettingsIcon />
           </IconButton>
+
+          <SourceCodeLink />
         </Toolbar>
       </AppBar>
+
+      {/* make a toolbar-size shift */}
+      <Toolbar />
 
       {content}
     </Box>
