@@ -52,6 +52,7 @@ jobs:
         REACT_APP_GITHUB_APP_CLIENT_ID: ${{ secrets.GH_APP_CLIENT_ID }}
         REACT_APP_GITHUB_APP_EXCHANGE_URL: ${{ secrets.GH_APP_EXCHANGE_URL }}
         REACT_APP_GITHUB_APP_REFRESH_URL: ${{ secrets.GH_APP_REFRESH_URL }}
+        REACT_APP_MARKDIARY_GITHUB_URL: ${{ vars.MARKDIARY_GITHUB_URL }}
       run: npm run build
 
     - name: Upload artifact

@@ -6,6 +6,7 @@ const requiredEnvs = [
   'REACT_APP_GITHUB_APP_CLIENT_ID',
   'REACT_APP_GITHUB_APP_EXCHANGE_URL',
   'REACT_APP_GITHUB_APP_REFRESH_URL',
+  'REACT_APP_MARKDIARY_GITHUB_URL',
 ]
 for (const envVar of requiredEnvs) {
   if (!process.env[envVar]) {
