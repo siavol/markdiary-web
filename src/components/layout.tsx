@@ -115,7 +115,7 @@ const Layout: React.FunctionComponent = () => {
             color="inherit"
             component={RouterLink}
             area-label="Configuration"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: 'none', sm: 'flex' } }}
           >
             {t('Configuration')}
           </Button>
@@ -123,7 +123,7 @@ const Layout: React.FunctionComponent = () => {
             to="/config"
             component={RouterLink}
             color="inherit"
-            sx={{ display: { xs: 'block', sm: 'none' } }}
+            sx={{ display: { xs: 'flex', sm: 'none' } }}
           >
             <SettingsIcon />
           </IconButton>
