@@ -19,8 +19,8 @@ import {
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
-import GitHubIcon from '@mui/icons-material/GitHub'
 import { ConfigStatus, hasConfigured } from '../services/config-storage'
+import SourceCodeLink from './source-code-link'
 
 type MenuClickHandler = () => void
 export interface LayoutContext {
@@ -128,14 +128,7 @@ const Layout: React.FunctionComponent = () => {
             <SettingsIcon />
           </IconButton>
 
-          <IconButton
-            color="inherit"
-            href={process.env.REACT_APP_MARKDIARY_GITHUB_URL ?? ''}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <GitHubIcon />
-          </IconButton>
+          <SourceCodeLink />
         </Toolbar>
       </AppBar>
 
