@@ -21,6 +21,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
 import { ConfigStatus, hasConfigured } from '../services/config-storage'
 import SourceCodeLink from './source-code-link'
+import UserMenu from './user-menu'
 
 type MenuClickHandler = () => void
 export interface LayoutContext {
@@ -129,6 +130,8 @@ const Layout: React.FunctionComponent = () => {
           </IconButton>
 
           <SourceCodeLink />
+
+          <UserMenu />
         </Toolbar>
       </AppBar>
 

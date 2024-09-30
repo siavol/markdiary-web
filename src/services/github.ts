@@ -39,6 +39,7 @@ export type GitHubRepo = {
 export type GitHubUser = {
   name: string | null
   email: string | null
+  avatarUrl: string
 }
 
 export type GitHubAppInstallation = {
@@ -311,6 +312,7 @@ export async function getUser(config: Config): Promise<GitHubUser> {
   return {
     name: data.name,
     email: data.email,
+    avatarUrl: data.avatar_url,
   }
 }
 
