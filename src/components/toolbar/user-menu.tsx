@@ -6,6 +6,7 @@ import {
   IconButton,
   Link,
   ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Tooltip,
@@ -14,6 +15,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import SettingsIcon from '@mui/icons-material/Settings'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import useUser from '../../hooks/useUser'
 
 type MenuItemOnClickProps = {
@@ -28,7 +30,7 @@ const ConfigurationMenuItem: React.FunctionComponent<MenuItemOnClickProps> = ({
       <ListItemIcon>
         <SettingsIcon />
       </ListItemIcon>
-      Configuration
+      <ListItemText>Configuration</ListItemText>
     </MenuItem>
   )
 }
@@ -50,7 +52,10 @@ const SourceCodeMenuItem: React.FunctionComponent<MenuItemOnClickProps> = ({
         <ListItemIcon>
           <GitHubIcon />
         </ListItemIcon>
-        GitHub
+        <ListItemText>GitHub</ListItemText>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <OpenInNewIcon fontSize="small" />
+        </Typography>
       </MenuItem>
     )
   else return null

@@ -16,7 +16,6 @@ import {
   CssBaseline,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import SourceCodeLink from './toolbar/source-code-link'
 import UserMenu from './toolbar/user-menu'
 import NewRecordButton from './toolbar/new-record-button'
 
