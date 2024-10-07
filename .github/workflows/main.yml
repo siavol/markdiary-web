@@ -44,7 +44,18 @@ jobs:
       run: npm run lint
 
     - name: Run tests
-      run: npm test
+      run: npm run test:coverage
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: ./coverage
+
+    - name: Upload results to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Build app
       env:
