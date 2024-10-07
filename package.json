@@ -44,6 +44,7 @@
     "build:check-envs": "node ./check-env-vars",
     "build:app": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint ."
   },
