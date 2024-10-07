@@ -27,6 +27,17 @@ import ConfigGuide from './components/config/config-guide'
 import { ConfigGitHubAuth } from './components/config/github-auth'
 import { ConfigGitHubRepo } from './components/config/github-repo'
 import { ConfigGitHubAuthor } from './components/config/config.author'
+import GlobalLoader from './components/global-loader'
+
+const removeSpinner = (): void => {
+  const spinner = document.getElementById('loading-spinner')
+  if (spinner) {
+    spinner.style.opacity = '0'
+    setTimeout(() => {
+      spinner.remove()
+    }, 500)
+  }
+}
 
 const router = createBrowserRouter(
   [
@@ -100,9 +111,11 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <RouterProvider router={router} fallbackElement={<GlobalLoader />} />
   </React.StrictMode>
 )
+
+removeSpinner()
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
