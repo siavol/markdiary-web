@@ -94,7 +94,6 @@ const Layout: React.FunctionComponent = () => {
           </Typography>
 
           <NewRecordButton />
-          <SourceCodeLink />
 
           <UserMenu />
         </Toolbar>

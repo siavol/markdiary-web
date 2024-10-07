@@ -4,6 +4,7 @@ import {
   Badge,
   CircularProgress,
   IconButton,
+  Link,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -12,7 +13,48 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import SettingsIcon from '@mui/icons-material/Settings'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import useUser from '../../hooks/useUser'
+
+type MenuItemOnClickProps = {
+  onClick: () => void
+}
+
+const ConfigurationMenuItem: React.FunctionComponent<MenuItemOnClickProps> = ({
+  onClick,
+}) => {
+  return (
+    <MenuItem onClick={onClick} to="/config" component={RouterLink}>
+      <ListItemIcon>
+        <SettingsIcon />
+      </ListItemIcon>
+      Configuration
+    </MenuItem>
+  )
+}
+
+const SourceCodeMenuItem: React.FunctionComponent<MenuItemOnClickProps> = ({
+  onClick,
+}) => {
+  const githubUrl = process.env.REACT_APP_MARKDIARY_GITHUB_URL
+
+  if (githubUrl)
+    return (
+      <MenuItem
+        onClick={onClick}
+        href={githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        component={Link}
+      >
+        <ListItemIcon>
+          <GitHubIcon />
+        </ListItemIcon>
+        GitHub
+      </MenuItem>
+    )
+  else return null
+}
 
 const UserMenu: React.FunctionComponent = () => {
   const { user, loading, error } = useUser()
@@ -69,13 +111,8 @@ const UserMenu: React.FunctionComponent = () => {
           onClose={handleClose}
           onClick={handleClose}
         >
-          <MenuItem onClick={handleClose} to="/config" component={RouterLink}>
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            Configuration
-          </MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <ConfigurationMenuItem onClick={handleClose} />
+          <SourceCodeMenuItem onClick={handleClose} />
         </Menu>
       </>
     )
