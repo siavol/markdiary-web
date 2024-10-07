@@ -5,22 +5,19 @@ import {
   useNavigation,
   useMatches,
 } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import {
   AppBar,
   Container,
   Typography,
-  Button,
   Toolbar,
   IconButton,
   LinearProgress,
   CssBaseline,
 } from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings'
 import MenuIcon from '@mui/icons-material/Menu'
-import { ConfigStatus, hasConfigured } from '../services/config-storage'
-import SourceCodeLink from './source-code-link'
+import UserMenu from './toolbar/user-menu'
+import NewRecordButton from './toolbar/new-record-button'
 
 type MenuClickHandler = () => void
 export interface LayoutContext {
@@ -49,8 +46,6 @@ class LayoutContextImpl implements LayoutContext {
 const Layout: React.FunctionComponent = () => {
   const navigation = useNavigation()
   const matches = useMatches()
-  const { t } = useTranslation(['layout', 'general'])
-  const isConfigured = hasConfigured(ConfigStatus.Full)
 
   const contex = new LayoutContextImpl()
   const showMenuButton = matches.some(
@@ -77,17 +72,6 @@ const Layout: React.FunctionComponent = () => {
       <LinearProgress />
     )
 
-  const newButton = isConfigured ? (
-    <Button
-      to="/new"
-      color="inherit"
-      component={RouterLink}
-      sx={{ display: { xs: 'none', sm: 'block' } }}
-    >
-      {t('New record')}
-    </Button>
-  ) : null
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <CssBaseline />
@@ -108,27 +92,9 @@ const Layout: React.FunctionComponent = () => {
             Markdiary
           </Typography>
 
-          {newButton}
+          <NewRecordButton />
 
-          <Button
-            to="/config"
-            color="inherit"
-            component={RouterLink}
-            area-label="Configuration"
-            sx={{ display: { xs: 'none', sm: 'flex' } }}
-          >
-            {t('Configuration')}
-          </Button>
-          <IconButton
-            to="/config"
-            component={RouterLink}
-            color="inherit"
-            sx={{ display: { xs: 'flex', sm: 'none' } }}
-          >
-            <SettingsIcon />
-          </IconButton>
-
-          <SourceCodeLink />
+          <UserMenu />
         </Toolbar>
       </AppBar>
 
