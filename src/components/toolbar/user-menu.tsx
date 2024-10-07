@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import SettingsIcon from '@mui/icons-material/Settings'
-import useUser from '../hooks/useUser'
+import useUser from '../../hooks/useUser'
 
 const UserMenu: React.FunctionComponent = () => {
   const { user, loading, error } = useUser()
